@@ -33,6 +33,6 @@ This process:
 - Creates communication problems
 - Causes inventory inaccuracies
 
-The Smart-Stock Inventory Bot solves this problem using Telegram automation.
+The Smart-Stock Inventory Bot solves this problem using Telegram automation for my team 7.
 
 ---
