@@ -14,14 +14,18 @@ bot.start(async (ctx) => {
     // Check if user exists
     const existingUser = await userModel.findUserByTelegramId(telegramId);
 
-    if (!existingUser) {
+    if (existingUser) {
+      // Returning user
+      const welcomeBack = `Welcome back ${firstName}! 👋\n\nThank you for using Smart Inventory Stock Bot! We're happy to see you again.`;
+      await ctx.reply(welcomeBack);
+    } else {
       // New user - save to database
       await userModel.createUser(telegramId, username, firstName, lastName);
+      
+      // First time welcome
+      const firstWelcome = `Welcome ${firstName}! 👋\n\nWelcome to Smart Inventory Stock Bot! Check your stock items and manage inventory easily.`;
+      await ctx.reply(firstWelcome);
     }
-
-    // Send warm welcome message
-    const warmWelcome = `Welcome ${firstName}! 👋\n\nWelcome to Smart Inventory Stock Bot! Check your stock items and manage inventory easily.`;
-    await ctx.reply(warmWelcome);
   } catch (err) {
     console.error('Error in /start:', err);
     await ctx.reply('Error occurred. Try again later.');
