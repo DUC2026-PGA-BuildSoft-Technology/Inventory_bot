@@ -107,9 +107,11 @@ Rules:
 
 | Name | Role |
 | :--- | :--- |
-| LORN David | Project Manager |
-| Udom Vathna | Backend Developer |
-| Meurn Chettra | Database & API Developer |
+| YOEUM Sochhiet | Product Owner |
+| LORN David | Scrum Master QA |
+| Udom Vathna | Developer |
+| Meurn Chettra | Developer |
+| LAO panha | Developer |
 
 ---
 
