@@ -1,4 +1,4 @@
-# 📦 Smart-Stock Inventory Bot
+#  Smart-Stock Inventory Bot
 
 A Telegram-based inventory management system for wholesale garment or electronics shops in Orussey Market.
 
@@ -6,7 +6,7 @@ This project is developed for the Software Project Development course (2026).
 
 ---
 
-# 🚀 Project Overview
+# Project Overview
 
 The Smart-Stock Inventory Bot helps shop owners manage inventory remotely through Telegram.
 
@@ -20,7 +20,7 @@ The system supports:
 
 ---
 
-# ❗️ Problem Statement
+# Problem Statement
 
 Shop owners are often outside the shop.
 
