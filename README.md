@@ -79,7 +79,73 @@ PORT=3000
 ```bash
 /start
 /help
+/view_catalog
+/check_stock 885001
+/sell 885001 2
+/update_stock 885001 10
 ```
+
+---
+
+# Live Command Integration Demo
+
+Use these steps to show that the Telegram bot reads live inventory rows from PostgreSQL.
+
+1. Create the database tables in Neon PostgreSQL.
+
+```bash
+psql "$DATABASE_URL" -f src/models/Schema.sql
+```
+
+2. Add demo products if the products table is empty.
+
+```bash
+psql "$DATABASE_URL" -f src/models/seed.sql
+```
+
+3. Start the bot locally.
+
+```bash
+npm install
+npm run dev
+```
+
+4. Open Telegram and run:
+
+```bash
+/start
+/view_catalog
+```
+
+Expected result: the bot replies with "Live Product Catalog" and renders current rows from the `products` table as an inline Telegram menu. If you update a product stock value in PostgreSQL and run `/view_catalog` again, the Telegram menu shows the updated quantity.
+
+5. Demonstrate live database operations:
+
+```bash
+/check_stock 885001
+/sell 885001 2
+/check_stock 885001
+/update_stock 885001 5
+/view_catalog
+```
+
+The `/sell` command inserts a row into `sales`, reduces `products.stock_quantity`, writes a `stock_logs` row, and creates a low-stock notification when stock is low.
+
+---
+
+# Sprint 3 Agile Board Evidence
+
+Create or update GitHub Project Board cards in the Sprint 3 columns:
+
+| Column | Card | Developer Assignment |
+| :--- | :--- | :--- |
+| Todo | Create products/sales/stock_logs/notifications schema | Database & API Developer |
+| In Progress | Implement `/view_catalog` live product query | Backend Developer |
+| In Progress | Implement `/check_stock`, `/sell`, `/update_stock` | Backend Developer |
+| Review | Verify Telegram command output with Neon data | QA / Scrum Master |
+| Done | Commit schema and bot command integration | Assigned Developer |
+
+Each card should link to the related commit, pull request, or issue. For the instructor demo, open the board and show the card movement across Sprint 3 columns.
 
 ---
 
