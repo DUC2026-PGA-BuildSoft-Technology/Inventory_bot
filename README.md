@@ -13,6 +13,7 @@ Developed for the Software Project Development course (2026).
 - Stock lookup by barcode with `/check_stock`
 - Sales recording through `/sell`
 - Stock adjustment using `/update_stock`
+- USD → KHR exchange rate via `/exchange`
 - Inventory activity logging and low-stock notifications
 - Simple Express health checks for server and database
 
@@ -23,10 +24,10 @@ Developed for the Software Project Development course (2026).
 | Technology | Purpose |
 | :--- | :--- |
 | Node.js | Backend |
-| Express.js | API Framework |
+| Express.js | API framework |
 | PostgreSQL | Database |
-| Telegraf | Telegram Bot |
-| Render | Hosting |
+| Telegraf | Telegram bot |
+| Axios | External HTTP requests |
 
 ---
 
@@ -38,36 +39,49 @@ Inventory_bot/
 │   ├── bot/
 │   │   ├── bot.js
 │   │   └── helpers.js
-│   ├── commands/
-│   │   ├── actions/
-│   │   │   └── stockActionCommand.js
-│   │   ├── catalog/
-│   │   │   └── catalogCommand.js
-│   │   ├── help/
-│   │   │   └── helpCommand.js
-│   │   ├── sell/
-│   │   │   └── sellCommand.js
-│   │   └── stock/
-│   │       ├── checkStockCommand.js
-│   │       └── updateStockCommand.js
 │   ├── config/
 │   │   └── db.js
+│   ├── handlers/
+│   │   ├── catalog/
+│   │   │   └── catalogCommand.js
+│   │   ├── exchange/
+│   │   │   └── exchangeCommand.js
+│   │   ├── help/
+│   │   │   └── helpCommand.js
+│   │   ├── menu/
+│   │   │   └── menuCommand.js
+│   │   ├── sell/
+│   │   │   └── sellCommand.js
+│   │   ├── start/
+│   │   │   └── startCommand.js
+│   │   └── stock/
+│   │       ├── checkStockCommand.js
+│   │       ├── stockActionCommand.js
+│   │       └── updateStockCommand.js
 │   ├── models/
 │   │   ├── productModel.js
 │   │   ├── userModel.js
 │   │   ├── Schema.sql
 │   │   └── seed.sql
 │   ├── services/
+│   │   ├── apiService.js
+│   │   ├── productService.js
+│   │   ├── stockService.js
+│   │   ├── salesService.js
 │   │   └── userService.js
 │   ├── app.js
 │   └── server.js
 ├── .env.example
 ├── .gitignore
+├── commit.sh
 ├── package.json
 └── README.md
 ```
 
-Bot command logic is split into modular command files under `src/commands`, while `src/bot/bot.js` remains the central bot startup and command registration entry point.
+This project uses a handler-service-model pattern:
+- Handlers receive Telegram commands, validate input, call services, and reply.
+- Services contain business logic and coordinate database or external API calls.
+- Models contain low-level database queries.
 
 ---
 
@@ -81,15 +95,24 @@ Bot command logic is split into modular command files under `src/commands`, whil
 
 ## Setup
 
-1. Install dependencies:
+1. Clone the repository:
 
 ```bash
 git clone <repository-url>
-
 cd Inventory_bot
+```
 
+2. Install dependencies:
+
+```bash
 npm install
+```
 
+3. Create a `.env` from `.env.example` and set the required variables.
+
+4. Start the app:
+
+```bash
 npm run dev
 ```
 
@@ -99,9 +122,7 @@ npm run dev
 
 ```env
 TELEGRAM_BOT_TOKEN=your_token_here
-
 DATABASE_URL=postgresql://username:password@host:port/database?sslmode=verify-full&channel_binding=require
-
 PORT=3000
 ```
 
@@ -109,34 +130,46 @@ PORT=3000
 
 # 🤖 Telegram Commands
 
+Use the following commands from the Telegram bot chat:
+
+- `/start` — register user and receive welcome message
+- `/help` — view available bot commands
+- `/menu` — show the command menu
+- `/view_catalog` — list live products from the database
+- `/check_stock [barcode]` — show stock details for a product
+- `/sell [barcode] [qty]` — record a sale and reduce stock
+- `/update_stock [barcode] [qty]` — adjust product stock quantity
+- `/exchange` — fetch the USD → KHR exchange rate
+
+Example:
+
 ```bash
-/start
-/help
-/view_catalog
 /check_stock 885001
 /sell 885001 2
-/update_stock 885001 10
+/update_stock 885001 5
+/exchange
+/view_catalog
 ```
 
 ---
 
-# Live Command Integration Demo
+# `/exchange` Feature
 
-Use these steps to show that the Telegram bot reads live inventory rows from PostgreSQL.
+The `/exchange` command calls `src/services/apiService.js` and retrieves a live USD to KHR rate from a public API.
 
-1. Create the database tables in Neon PostgreSQL.
+Example bot reply:
 
-```bash
-psql "$DATABASE_URL" -f src/models/Schema.sql
+```text
+USD → KHR Exchange Rate
+
+1 USD = 4,100 KHR
 ```
 
-2. Add demo products if the products table is empty.
+If the external API fails, the bot replies with:
 
-```bash
-psql "$DATABASE_URL" -f src/models/seed.sql
+```text
+Unable to retrieve exchange rate. Please try again later.
 ```
-
-Make sure `DATABASE_URL` points to a working PostgreSQL instance.
 
 ---
 
@@ -145,102 +178,59 @@ Make sure `DATABASE_URL` points to a working PostgreSQL instance.
 Start in development mode:
 
 ```bash
-npm install
 npm run dev
 ```
 
-4. Open Telegram and run:
+Production start:
 
 ```bash
 npm start
 ```
 
-The app listens on `PORT` from `.env` (default `3000`).
+The app listens on the `PORT` value from `.env` (default `3000`).
 
 ---
 
-## Telegram Commands
+## Database Setup
 
-Use these commands from your Telegram bot chat:
-
-- `/start` — register user and receive welcome message
-- `/help` — view available bot commands
-- `/view_catalog` — list live products from the database
-- `/check_stock [barcode]` — show stock details for a product
-- `/sell [barcode] [qty]` — record a sale and reduce stock
-- `/update_stock [barcode] [qty]` — adjust product stock quantity
-
-Example:
+Create database tables:
 
 ```bash
-/check_stock 885001
-/sell 885001 2
-/check_stock 885001
-/update_stock 885001 5
-/view_catalog
+psql "$DATABASE_URL" -f src/models/Schema.sql
 ```
 
-The `/sell` command inserts a row into `sales`, reduces `products.stock_quantity`, writes a `stock_logs` row, and creates a low-stock notification when stock is low.
-
----
-
-# Sprint 3 Agile Board Evidence
-
-Create or update GitHub Project Board cards in the Sprint 3 columns:
-
-| Column | Card | Developer Assignment |
-| :--- | :--- | :--- |
-| Todo | Create products/sales/stock_logs/notifications schema | Database & API Developer |
-| In Progress | Implement `/view_catalog` live product query | Backend Developer |
-| In Progress | Implement `/check_stock`, `/sell`, `/update_stock` | Backend Developer |
-| Review | Verify Telegram command output with Neon data | QA / Scrum Master |
-| Done | Commit schema and bot command integration | Assigned Developer |
-
-Each card should link to the related commit, pull request, or issue. For the instructor demo, open the board and show the card movement across Sprint 3 columns.
-
----
-
-# 🌿 Git Workflow
+Seed demo data:
 
 ```bash
-git checkout -b feat-user-registration
-
-git add .
-
-git commit -m "Add user registration"
-
-git push origin feat-user-registration
-```
-
-Rules:
-- Use feature branches
-- Create Pull Requests
-- Review code before merge
-- Never push directly to main
-
----
-
-# 👥 Team Members
-
-| Name | Role |
-| :--- | :--- |
-| YOEUM Sochhiet | Product Owner |
-| LORN David | Scrum Master QA |
-| Udom Vathna | Developer |
-| Meurn Chettra | Developer |
-| LAO panha | Developer |
-
----
-
-# 🚀 Deployment
-
-Hosting Platform:
-```text
-Render
+psql "$DATABASE_URL" -f src/models/seed.sql
 ```
 
 ---
 
-# 📄 License
+## Clean Architecture
+
+This repository is organized to separate concerns:
+- `src/handlers` handles Telegram commands
+- `src/services` contains business logic and service integrations
+- `src/models` contains database access logic
+- `src/bot/bot.js` is the main Telegraf startup and command registration file
+
+---
+
+## Git Workflow
+
+Use feature branches and descriptive commit messages:
+
+```bash
+git checkout -b feat/exchange-command
+npm install
+npm run dev
+./commit.sh "Add /exchange feature and API service"
+git push origin feat/exchange-command
+```
+
+---
+
+## License
 
 MIT License
