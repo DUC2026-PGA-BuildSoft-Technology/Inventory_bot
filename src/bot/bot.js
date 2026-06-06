@@ -1,12 +1,13 @@
 const { Telegraf } = require('telegraf');
-const { registerStartCommand } = require('../commands/start/startCommand');
-const { registerHelpCommand } = require('../commands/help/helpCommand');
-const { registerCatalogCommand } = require('../commands/catalog/catalogCommand');
-const { registerCheckStockCommand } = require('../commands/stock/checkStockCommand');
-const { registerUpdateStockCommand } = require('../commands/stock/updateStockCommand');
-const { registerSellCommand } = require('../commands/sell/sellCommand');
-const { registerStockAction } = require('../commands/actions/stockActionCommand');
-const { registerMenuCommand } = require('../commands/menu/menuCommand');
+const { registerStartCommand } = require('../handlers/start/startCommand');
+const { registerHelpCommand } = require('../handlers/help/helpCommand');
+const { registerCatalogCommand } = require('../handlers/catalog/catalogCommand');
+const { registerCheckStockCommand } = require('../handlers/stock/checkStockCommand');
+const { registerUpdateStockCommand } = require('../handlers/stock/updateStockCommand');
+const { registerSellCommand } = require('../handlers/sell/sellCommand');
+const { registerStockAction } = require('../handlers/stock/stockActionCommand');
+const { registerMenuCommand } = require('../handlers/menu/menuCommand');
+const { registerExchangeCommand } = require('../handlers/exchange/exchangeCommand');
 
 const bot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN);
 
@@ -18,6 +19,7 @@ registerUpdateStockCommand(bot);
 registerSellCommand(bot);
 registerStockAction(bot);
 registerMenuCommand(bot);
+registerExchangeCommand(bot);
 
 const startBot = async () => {
   try {
@@ -31,6 +33,7 @@ const startBot = async () => {
       { command: 'check_stock', description: 'Check stock by barcode' },
       { command: 'sell', description: 'Record a sale' },
       { command: 'update_stock', description: 'Adjust inventory stock' },
+      { command: 'exchange', description: 'Show USD → KHR exchange rate' },
     ]);
 
     await bot.launch();

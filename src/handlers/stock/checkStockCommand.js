@@ -1,4 +1,4 @@
-const productModel = require('../../models/productModel');
+const productService = require('../../services/productService');
 const { parseCommandArgs, formatMoney } = require('../../bot/helpers');
 
 const registerCheckStockCommand = (bot) => {
@@ -11,7 +11,7 @@ const registerCheckStockCommand = (bot) => {
         return;
       }
 
-      const product = await productModel.findProductByBarcode(barcode);
+      const product = await productService.findProductByBarcode(barcode);
 
       if (!product) {
         await ctx.reply(`No product found with barcode ${barcode}.`);

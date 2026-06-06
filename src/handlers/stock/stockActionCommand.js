@@ -1,11 +1,11 @@
-const productModel = require('../../models/productModel');
+const productService = require('../../services/productService');
 const { formatMoney } = require('../../bot/helpers');
 
 const registerStockAction = (bot) => {
   bot.action(/^stock:(.+)$/, async (ctx) => {
     try {
       const barcode = ctx.match[1];
-      const product = await productModel.findProductByBarcode(barcode);
+      const product = await productService.findProductByBarcode(barcode);
 
       if (!product) {
         await ctx.answerCbQuery('Product not found');

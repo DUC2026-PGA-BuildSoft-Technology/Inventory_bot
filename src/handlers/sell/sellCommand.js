@@ -1,5 +1,6 @@
-const productModel = require('../../models/productModel');
-const { parseCommandArgs, ensureCurrentUser, formatMoney } = require('../../bot/helpers');
+const salesService = require('../../services/salesService');
+const userService = require('../../services/userService');
+const { parseCommandArgs, formatMoney } = require('../../bot/helpers');
 
 const registerSellCommand = (bot) => {
   bot.command('sell', async (ctx) => {
@@ -12,8 +13,8 @@ const registerSellCommand = (bot) => {
         return;
       }
 
-      const user = await ensureCurrentUser(ctx);
-      const result = await productModel.recordSaleByBarcode(barcode, quantity, user.id);
+      const { user } = await userService.findOrCreateUserByTelegram(ctx);
+      const result = await salesService.recordSale(barcode, quantity, user.id);
 
       if (result.status === 'not_found') {
         await ctx.reply(`No product found with barcode ${barcode}.`);

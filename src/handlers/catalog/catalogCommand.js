@@ -1,10 +1,10 @@
-const productModel = require('../../models/productModel');
+const productService = require('../../services/productService');
 const { formatProductLine } = require('../../bot/helpers');
 
 const registerCatalogCommand = (bot) => {
   bot.command('view_catalog', async (ctx) => {
     try {
-      const products = await productModel.listCatalogProducts();
+      const products = await productService.listCatalogProducts();
 
       if (products.length === 0) {
         await ctx.reply('Catalog is empty. Add products to the products table first.');

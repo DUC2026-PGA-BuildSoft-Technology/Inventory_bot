@@ -1,5 +1,6 @@
-const productModel = require('../../models/productModel');
-const { parseCommandArgs, ensureCurrentUser } = require('../../bot/helpers');
+const stockService = require('../../services/stockService');
+const userService = require('../../services/userService');
+const { parseCommandArgs } = require('../../bot/helpers');
 
 const registerUpdateStockCommand = (bot) => {
   bot.command('update_stock', async (ctx) => {
@@ -12,8 +13,8 @@ const registerUpdateStockCommand = (bot) => {
         return;
       }
 
-      const user = await ensureCurrentUser(ctx);
-      const result = await productModel.updateStockByBarcode(barcode, quantity, user.id);
+      const { user } = await userService.findOrCreateUserByTelegram(ctx);
+      const result = await stockService.updateStock(barcode, quantity, user.id);
 
       if (result.status === 'not_found') {
         await ctx.reply(`No product found with barcode ${barcode}.`);
