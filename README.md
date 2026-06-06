@@ -73,7 +73,6 @@ Inventory_bot/
 │   └── server.js
 ├── .env.example
 ├── .gitignore
-├── commit.sh
 ├── package.json
 └── README.md
 ```
