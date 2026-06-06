@@ -1,4 +1,4 @@
-# 📦 Smart-Stock Inventory Bot
+#  Smart-Stock Inventory Bot
 
 A Telegram-based inventory management system built with Node.js, Express.js, and PostgreSQL for wholesale shops in Orussey Market.
 
@@ -6,7 +6,7 @@ Developed for the Software Project Development course (2026).
 
 ---
 
-# 🚀 Features
+#  Features
 
 - Telegram user registration via `/start`
 - Live product catalog display from PostgreSQL
@@ -31,7 +31,7 @@ Developed for the Software Project Development course (2026).
 
 ---
 
-# 📁 Project Structure
+#  Project Structure
 
 ```text
 Inventory_bot/
@@ -117,7 +117,7 @@ npm run dev
 
 ---
 
-# 🔐 Environment Variables
+#  Environment Variables
 
 ```env
 TELEGRAM_BOT_TOKEN=your_token_here
@@ -127,7 +127,7 @@ PORT=3000
 
 ---
 
-# 🤖 Telegram Commands
+#  Telegram Commands
 
 Use the following commands from the Telegram bot chat:
 
