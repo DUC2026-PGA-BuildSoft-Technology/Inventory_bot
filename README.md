@@ -19,7 +19,7 @@ Developed for the Software Project Development course (2026).
 
 ---
 
-# 🛠️ Tech Stack
+#  Tech Stack
 
 | Technology | Purpose |
 | :--- | :--- |
