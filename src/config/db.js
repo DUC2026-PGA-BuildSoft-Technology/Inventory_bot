@@ -4,9 +4,6 @@ const { Pool } = require('pg');
 // PostgreSQL connection pool
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false,
-  },
 });
 
 pool.on('connect', () => {

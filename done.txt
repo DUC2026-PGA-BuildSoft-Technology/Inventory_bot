@@ -1,0 +1,48 @@
+Week 9 — Feature summary (project-structure aligned)
+
+src/services/
+- `apiService.js` — `getExchangeRate()` using `axios` with `async/await`, 5000ms timeout, JSON parsing; returns `{ success, rate }` or `{ success: false, message }`.
+- `stockService.js` — business wrapper for stock updates (calls `productService`).
+- `salesService.js` — business wrapper for recording sales (calls `productService`).
+- `productService.js` — existing service that delegates to `models/productModel.js` for DB transactions.
+- `userService.js` — existing user-related logic (find/create by Telegram ID).
+
+src/handlers/
+- `exchange/exchangeCommand.js` — `/exchange` command: validates, calls `apiService.getExchangeRate()`, formats reply, handles errors with friendly message.
+- `sell/sellCommand.js` — now calls `salesService.recordSale()` and only handles Telegram-level input/response.
+- `stock/updateStockCommand.js` — now calls `stockService.updateStock()` and only handles Telegram-level input/response.
+- Other handlers (`catalog`, `check_stock`, `menu`, `help`, `start`) remain handlers-only and call services.
+
+src/bot/
+- `bot.js` — registers `registerExchangeCommand` and adds `exchange` to bot command list so Telegram shows it in `/menu`.
+
+src/models/
+- `productModel.js` — contains DB transaction SQL for listing, updating stock, and recording sales (keeps low-level DB logic). Recommendation: move transaction orchestration into services later for stricter separation.
+
+Config & dependencies
+- `package.json` — added `axios` dependency.
+
+Error handling & async
+- All external requests use `try/catch` and do not crash the server.
+- `apiService` returns a user-friendly message on failure: "Unable to retrieve exchange rate. Please try again later.".
+
+Behavior: `/exchange` flow
+1. User sends `/exchange`.
+2. `exchangeCommand` calls `apiService.getExchangeRate()`.
+3. `apiService` queries `https://api.exchangerate.host/latest?base=USD&symbols=KHR` with 5000ms timeout.
+4. If successful, bot replies:
+
+   USD → KHR Exchange Rate
+
+   1 USD = 4,100 KHR
+
+5. If API fails, bot replies: "Unable to retrieve exchange rate. Please try again later.".
+
+Notes & next steps
+- Current change set meets Week 9 requirements: service layer, external API, async programming, error handling, separation of concerns at handler level.
+- Recommended refinements:
+  - Move DB transaction orchestration from `productModel.js` into `stockService`/`salesService` for cleaner separation.
+  - Add structured logging (`winston`/`pino`) and environment-based log levels.
+  - Add ESLint and a basic test for `/exchange` (mock `axios`).
+
+Files changed/added: check git diff for exact list.

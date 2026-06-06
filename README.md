@@ -8,13 +8,13 @@ Developed for the Software Project Development course (2026).
 
 # 🚀 Features
 
-- User registration with Telegram
-- Real-time stock checking
-- Inventory updates
-- Sales recording
-- PostgreSQL database integration
-- Multi-user support
-- Secure environment variables
+- Telegram user registration via `/start`
+- Live product catalog display from PostgreSQL
+- Stock lookup by barcode with `/check_stock`
+- Sales recording through `/sell`
+- Stock adjustment using `/update_stock`
+- Inventory activity logging and low-stock notifications
+- Simple Express health checks for server and database
 
 ---
 
@@ -36,19 +36,52 @@ Developed for the Software Project Development course (2026).
 Inventory_bot/
 ├── src/
 │   ├── bot/
+│   │   ├── bot.js
+│   │   └── helpers.js
+│   ├── commands/
+│   │   ├── actions/
+│   │   │   └── stockActionCommand.js
+│   │   ├── catalog/
+│   │   │   └── catalogCommand.js
+│   │   ├── help/
+│   │   │   └── helpCommand.js
+│   │   ├── sell/
+│   │   │   └── sellCommand.js
+│   │   └── stock/
+│   │       ├── checkStockCommand.js
+│   │       └── updateStockCommand.js
 │   ├── config/
+│   │   └── db.js
 │   ├── models/
+│   │   ├── productModel.js
+│   │   ├── userModel.js
+│   │   ├── Schema.sql
+│   │   └── seed.sql
 │   ├── services/
-│   └── app.js
+│   │   └── userService.js
+│   ├── app.js
+│   └── server.js
 ├── .env.example
 ├── .gitignore
 ├── package.json
 └── README.md
 ```
 
+Bot command logic is split into modular command files under `src/commands`, while `src/bot/bot.js` remains the central bot startup and command registration entry point.
+
 ---
 
-# ⚡ Installation
+## Requirements
+
+- Node.js 14+ (or later)
+- PostgreSQL database
+- Telegram bot token
+
+---
+
+## Setup
+
+1. Install dependencies:
 
 ```bash
 git clone <repository-url>
@@ -67,7 +100,7 @@ npm run dev
 ```env
 TELEGRAM_BOT_TOKEN=your_token_here
 
-DATABASE_URL=your_postgresql_url
+DATABASE_URL=postgresql://username:password@host:port/database?sslmode=verify-full&channel_binding=require
 
 PORT=3000
 ```
@@ -103,7 +136,13 @@ psql "$DATABASE_URL" -f src/models/Schema.sql
 psql "$DATABASE_URL" -f src/models/seed.sql
 ```
 
-3. Start the bot locally.
+Make sure `DATABASE_URL` points to a working PostgreSQL instance.
+
+---
+
+## Run the App
+
+Start in development mode:
 
 ```bash
 npm install
@@ -113,13 +152,25 @@ npm run dev
 4. Open Telegram and run:
 
 ```bash
-/start
-/view_catalog
+npm start
 ```
 
-Expected result: the bot replies with "Live Product Catalog" and renders current rows from the `products` table as an inline Telegram menu. If you update a product stock value in PostgreSQL and run `/view_catalog` again, the Telegram menu shows the updated quantity.
+The app listens on `PORT` from `.env` (default `3000`).
 
-5. Demonstrate live database operations:
+---
+
+## Telegram Commands
+
+Use these commands from your Telegram bot chat:
+
+- `/start` — register user and receive welcome message
+- `/help` — view available bot commands
+- `/view_catalog` — list live products from the database
+- `/check_stock [barcode]` — show stock details for a product
+- `/sell [barcode] [qty]` — record a sale and reduce stock
+- `/update_stock [barcode] [qty]` — adjust product stock quantity
+
+Example:
 
 ```bash
 /check_stock 885001
