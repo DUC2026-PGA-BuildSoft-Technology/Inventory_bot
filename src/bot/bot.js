@@ -9,19 +9,27 @@ const { registerStockAction } = require('../handlers/stock/stockActionCommand');
 const { registerMenuCommand } = require('../handlers/menu/menuCommand');
 const { registerExchangeCommand } = require('../handlers/exchange/exchangeCommand');
 
-const bot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN);
+const token = process.env.TELEGRAM_BOT_TOKEN;
+const bot = token && !token.includes('your_telegram_bot_token') ? new Telegraf(token) : null;
 
-registerStartCommand(bot);
-registerHelpCommand(bot);
-registerCatalogCommand(bot);
-registerCheckStockCommand(bot);
-registerUpdateStockCommand(bot);
-registerSellCommand(bot);
-registerStockAction(bot);
-registerMenuCommand(bot);
-registerExchangeCommand(bot);
+if (bot) {
+  registerStartCommand(bot);
+  registerHelpCommand(bot);
+  registerCatalogCommand(bot);
+  registerCheckStockCommand(bot);
+  registerUpdateStockCommand(bot);
+  registerSellCommand(bot);
+  registerStockAction(bot);
+  registerMenuCommand(bot);
+  registerExchangeCommand(bot);
+}
 
 const startBot = async () => {
+  if (!bot) {
+    console.log('ℹ Telegram bot skipped because no valid token is configured');
+    return;
+  }
+
   try {
     console.log('🤖 Bot starting...');
 
@@ -44,7 +52,9 @@ const startBot = async () => {
   }
 };
 
-process.once('SIGINT', () => bot.stop('SIGINT'));
-process.once('SIGTERM', () => bot.stop('SIGTERM'));
+if (bot) {
+  process.once('SIGINT', () => bot.stop('SIGINT'));
+  process.once('SIGTERM', () => bot.stop('SIGTERM'));
+}
 
 module.exports = { bot, startBot };

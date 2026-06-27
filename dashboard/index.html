@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Smart Stock Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="/styles.css" />
+</head>
+
+<body>
+    <div class="app-shell">
+        <div id="sidebarOverlay" class="sidebar-overlay"></div>
+
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="brand">
+                    <div class="brand-mark">S</div>
+                    <div class="brand-text">
+                        <h1>Smart Stock</h1>
+                        <p>Inventory Control</p>
+                    </div>
+                </div>
+                <button class="close-sidebar-btn" id="closeSidebarBtn">×</button>
+            </div>
+
+            <nav class="nav-links">
+                <button class="nav-btn active" data-target="dashboard">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                    </svg>
+                    Dashboard
+                </button>
+                <button class="nav-btn" data-target="products">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                        <line x1="8" y1="21" x2="16" y2="21"></line>
+                        <line x1="12" y1="17" x2="12" y2="21"></line>
+                    </svg>
+                    Products
+                </button>
+                <button class="nav-btn" data-target="admins">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
+                    Admins
+                </button>
+            </nav>
+
+            <div class="sidebar-card">
+                <div class="glow-bg"></div>
+                <div class="sidebar-card-content">
+                    <p>Live control center</p>
+                    <h3>Manage stock, products, and team access from one place.</h3>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-panel">
+            <header class="topbar">
+                <div class="topbar-left">
+                    <button class="mobile-menu-btn" id="openSidebarBtn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="3" y1="12" x2="21" y2="12"></line>
+                            <line x1="3" y1="6" x2="21" y2="6"></line>
+                            <line x1="3" y1="18" x2="21" y2="18"></line>
+                        </svg>
+                    </button>
+                    <div>
+                        <p class="eyebrow">Operations dashboard</p>
+                        <h2>Warehouse overview</h2>
+                    </div>
+                </div>
+                <button class="primary-btn" id="openModalBtn">
+                    <span>+</span> Add Product
+                </button>
+            </header>
+
+            <section id="dashboard" class="panel active-panel">
+                <div class="stats-grid">
+                    <article class="stat-card accent-blue">
+                        <div class="stat-icon-wrapper">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                            </svg>
+                        </div>
+                        <p>Total products</p>
+                        <h3 id="totalProducts">0</h3>
+                    </article>
+                    <article class="stat-card accent-amber">
+                        <div class="stat-icon-wrapper">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path
+                                    d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z">
+                                </path>
+                                <line x1="12" y1="9" x2="12" y2="13"></line>
+                                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                            </svg>
+                        </div>
+                        <p>Low stock</p>
+                        <h3 id="lowStock">0</h3>
+                    </article>
+                    <article class="stat-card accent-red">
+                        <div class="stat-icon-wrapper">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="15" y1="9" x2="9" y2="15"></line>
+                                <line x1="9" y1="9" x2="15" y2="15"></line>
+                            </svg>
+                        </div>
+                        <p>Out of stock</p>
+                        <h3 id="outOfStock">0</h3>
+                    </article>
+                    <article class="stat-card accent-green">
+                        <div class="stat-icon-wrapper">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="9" cy="7" r="4"></circle>
+                            </svg>
+                        </div>
+                        <p>Active admins</p>
+                        <h3 id="totalAdmins">0</h3>
+                    </article>
+                </div>
+
+                <div class="welcome-card">
+                    <div class="welcome-text">
+                        <p class="eyebrow">Today’s focus</p>
+                        <h3>Keep shelves healthy with fast stock updates and clean approvals.</h3>
+                    </div>
+                    <div class="pill">
+                        <span class="pulse-dot"></span>
+                        Neon + Cloudinary ready
+                    </div>
+                </div>
+            </section>
+
+            <section id="products" class="panel">
+                <div class="section-header">
+                    <div>
+                        <p class="eyebrow">Inventory</p>
+                        <h3>Product catalog</h3>
+                    </div>
+                </div>
+
+                <div class="table-card">
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Product Details</th>
+                                    <th>Barcode</th>
+                                    <th>Stock</th>
+                                    <th>Price</th>
+                                    <th>Status</th>
+                                    <th class="text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="productsTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section id="admins" class="panel">
+                <div class="section-header">
+                    <div>
+                        <p class="eyebrow">Access</p>
+                        <h3>Admin & seller list</h3>
+                    </div>
+                    <button class="secondary-btn" id="openAdminModalBtn">+ Add Admin</button>
+                </div>
+
+                <div class="table-card">
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Name / User</th>
+                                    <th>Telegram ID</th>
+                                    <th>Role</th>
+                                    <th>Date Added</th>
+                                    <th class="text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminsTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div class="modal hidden" id="productModal">
+        <div class="modal-backdrop" id="productModalBackdrop"></div>
+        <div class="modal-card">
+            <div class="modal-head">
+                <h3 id="productModalTitle">Add product</h3>
+                <button class="close-btn" id="closeProductModalBtn">×</button>
+            </div>
+            <form id="productForm" class="form-grid">
+                <input type="hidden" id="productId" />
+                <div class="input-group full-span">
+                    <label>Product name</label>
+                    <input id="productName" placeholder="Enter product name" required />
+                </div>
+                <div class="input-group">
+                    <label>Barcode</label>
+                    <input id="barcode" placeholder="e.g. 123456789" required />
+                </div>
+                <div class="input-group">
+                    <label>Category</label>
+                    <input id="category" placeholder="e.g. Shoes" />
+                </div>
+                <div class="input-group">
+                    <label>Color</label>
+                    <input id="color" placeholder="e.g. Black" />
+                </div>
+                <div class="input-group">
+                    <label>Size</label>
+                    <input id="size" placeholder="e.g. 42 / XL" />
+                </div>
+                <div class="input-group">
+                    <label>Stock Quantity</label>
+                    <input id="stockQuantity" type="number" min="0" placeholder="0" required />
+                </div>
+                <div class="input-group">
+                    <label>Price ($)</label>
+                    <input id="price" type="number" min="0" step="0.01" placeholder="0.00" required />
+                </div>
+                <div class="input-group full-span">
+                    <label>Status</label>
+                    <div class="select-wrapper">
+                        <select id="status">
+                            <option value="active">Active</option>
+                            <option value="low_stock">Low stock</option>
+                            <option value="out_of_stock">Out of stock</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="input-group full-span file-input-group">
+                    <label>Product image</label>
+                    <div class="file-upload-wrapper">
+                        <input id="productImage" type="file" accept="image/*" />
+                        <div class="file-upload-design">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="17 8 12 3 7 8"></polyline>
+                                <line x1="12" y1="3" x2="12" y2="15"></line>
+                            </svg>
+                            <p>Click to upload or drag & drop</p>
+                        </div>
+                    </div>
+                </div>
+                <div id="imagePreviewBox" class="image-preview full-span"></div>
+
+                <div class="modal-actions full-span">
+                    <button class="secondary-btn" type="button" id="cancelProductBtn">Cancel</button>
+                    <button class="primary-btn" type="submit">Save product</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal hidden" id="adminModal">
+        <div class="modal-backdrop" id="adminModalBackdrop"></div>
+        <div class="modal-card">
+            <div class="modal-head">
+                <h3>Add admin</h3>
+                <button class="close-btn" id="closeAdminModalBtn">×</button>
+            </div>
+            <form id="adminForm" class="form-grid">
+                <div class="input-group">
+                    <label>First name</label>
+                    <input id="adminFirstName" placeholder="Jane" required />
+                </div>
+                <div class="input-group">
+                    <label>Last name</label>
+                    <input id="adminLastName" placeholder="Doe" />
+                </div>
+                <div class="input-group">
+                    <label>Username</label>
+                    <input id="adminUsername" placeholder="@username" />
+                </div>
+                <div class="input-group">
+                    <label>Telegram ID</label>
+                    <input id="adminTelegramId" placeholder="12345678" required />
+                </div>
+                <div class="input-group full-span">
+                    <label>Role</label>
+                    <div class="select-wrapper">
+                        <select id="adminRole">
+                            <option value="seller">Seller</option>
+                            <option value="manager">Manager</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-actions full-span">
+                    <button class="secondary-btn" type="button" id="cancelAdminBtn">Cancel</button>
+                    <button class="primary-btn" type="submit">Save admin</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="/script.js"></script>
+</body>
+
+</html>
