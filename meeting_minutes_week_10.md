@@ -27,9 +27,9 @@
 
 ### ⚙️ Decisions Made
 * **Enforce a 100% button-driven inventory workflow for all roles**:
-  * **Sellers**: Browse ➔ View Details ➔ Add to Sales List ➔ Confirm Sale.
-  * **Stock Managers**: Stock Adjustment menu buttons (`Add 1/5/10`, `Sub 1/5/10`) to perform direct Stock In/Out.
-  * **Owners**: Main Menu shortcut button to generate daily sales summaries.
+  * **Sellers (seller)**: Browse ➔ View Details ➔ Add to Sales List ➔ Confirm Sale.
+  * **Stock Managers (stock-manager)**: Stock Adjustment menu buttons (`Add 1/5/10`, `Sub 1/5/10`, `Clear Stock`) and catalog product creation to perform direct Stock In/Out/Write-offs and catalog additions.
+  * **Owners & Managers (owner & manager)**: Main Menu shortcut buttons to generate multi-timeframe sales and stock movement reports (daily, weekly, monthly), and manage, ban, or delete user accounts.
   This completely replaces manual keyboard entries, eliminating typed arguments for all roles.
 * **Verify Transaction Lock Durability**: Ensure sales confirmations apply database transaction locks to prevent stock count overlaps.
 * **Resolve Callbacks Immediately**: Enforce query resolution in all Telegram callback methods to prevent interface hanging.

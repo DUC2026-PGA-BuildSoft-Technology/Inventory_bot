@@ -1,4 +1,5 @@
 const userService = require('../../services/userService');
+const { mainReplyKeyboard } = require('../menu/keyboardHandler');
 
 const getStartKeyboard = (role) => {
   const keyboard = [
@@ -6,9 +7,10 @@ const getStartKeyboard = (role) => {
     [{ text: '📋 View Sale List', callback_data: 'sales_list_view' }],
   ];
 
-  // Show report button for Owners/Admins
-  if (role === 'owner' || role === 'admin') {
-    keyboard.push([{ text: '📊 View Daily Report', callback_data: 'owner_report_view' }]);
+  // Show report and user management buttons for Owners/Managers/Admins
+  if (role === 'owner' || role === 'manager' || role === 'admin') {
+    keyboard.push([{ text: '📊 View Reports', callback_data: 'reports_dashboard_view' }]);
+    keyboard.push([{ text: '👤 Manage Users', callback_data: 'users_manage_view' }]);
   }
 
   return keyboard;
@@ -22,13 +24,16 @@ const registerStartCommand = (bot) => {
       const fullName = [firstName, lastName].filter(Boolean).join(' ');
 
       const { user } = await userService.findOrCreateUserByTelegram(ctx);
-      const role = user ? user.role : 'staff';
+      const role = user ? user.role : 'seller';
 
       const welcomeText = [
-        '📋 <b>Main Menu</b>',
+        '📋 <b>Smart-Stock Inventory</b>',
+        '━━━━━━━━━━━━━━━━━━',
+        `👤 <b>User:</b> ${fullName}`,
+        `🏢 <b>Project:</b> Smart-Stock Inventory`,
+        '━━━━━━━━━━━━━━━━━━',
         '',
-        `Welcome back, <b>${fullName}</b>!`, '\n',
-        'Select an option from the menu below to manage your inventory.'
+        'Select an administrative task from the menu below:'
       ].join('\n');
 
       await ctx.reply(welcomeText, {
@@ -52,13 +57,16 @@ const registerStartCommand = (bot) => {
       const fullName = [firstName, lastName].filter(Boolean).join(' ');
 
       const { user } = await userService.findOrCreateUserByTelegram(ctx);
-      const role = user ? user.role : 'staff';
+      const role = user ? user.role : 'seller';
 
       const menuText = [
-        '📋 <b>Main Menu</b>',
+        '📋 <b>Smart-Stock Inventory</b>',
+        '━━━━━━━━━━━━━━━━━━',
+        `👤 <b>User:</b> ${fullName}`,
+        `🏢 <b>Project:</b> Smart-Stock Inventory`,
+        '━━━━━━━━━━━━━━━━━━',
         '',
-        `Welcome back, <b>${fullName}</b>!`, '\n',
-        'Select an option from the menu below to manage your inventory.'
+        'Select an administrative task from the menu below:'
       ].join('\n');
 
       try {
@@ -85,4 +93,4 @@ const registerStartCommand = (bot) => {
   });
 };
 
-module.exports = { registerStartCommand };
+module.exports = { registerStartCommand, getStartKeyboard };

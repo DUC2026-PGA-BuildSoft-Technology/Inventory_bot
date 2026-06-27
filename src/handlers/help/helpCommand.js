@@ -1,3 +1,5 @@
+const { mainReplyKeyboard } = require('../menu/keyboardHandler');
+
 const registerHelpCommand = (bot) => {
   bot.help(async (ctx) => {
     await ctx.reply(
@@ -10,7 +12,10 @@ const registerHelpCommand = (bot) => {
         '/update_stock [barcode] [qty] - Add or subtract stock',
         '/start - Register your Telegram account',
         '/help - Show this command menu',
-      ].join('\n')
+      ].join('\n'),
+      {
+        reply_markup: mainReplyKeyboard
+      }
     );
   });
 };

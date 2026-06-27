@@ -15,11 +15,10 @@
 
 ### 💬 Discussion
 * **Week 11 Milestone Deliverables**: Reviewed the requirements to pass the final preparation audit: compiling a 15+ test case verification matrix, ensuring zero-crash behavior under interaction attacks, listing the active staging bot handle in the README, and merging all branches into `main`.
-* **Verification Test Matrix**: Discussed structuring a test matrix page in the Wiki. The team aligned on documenting **24 distinct test cases** covering happy paths (start menu, catalog, sales list, checkout, Owner report, adjustments, updates), boundaries (inventory limits), negative cases (API offline), and execution attacks (malformed parameters, random strings, role verification).
+* **Verification Test Matrix**: Discussed structuring a test matrix page in the Wiki. The team aligned on documenting **36 distinct test cases** covering happy paths (start menu, catalog, sales list, checkout, View Reports, user promotion, stock clear, user deletion, status toggling, product creation, updates), boundaries (inventory limits), negative cases (API offline), and execution attacks (malformed parameters, random strings, role verification, user bans, banned requests block, duplicate barcodes).
 * **Zero-Argument Adjustments, Customizations & Reports**:
-  * Verified that the **Stock Manager** can perform Stock In/Out directly via `[ ➕ Add 1/5/10 ]` and `[ ➖ Sub 1/5/10 ]` buttons, or type custom values (e.g., `7`, `11`, `13`) via prompts.
-  * Verified that the **Stock Manager** and **Owner** can securely edit product specifications (Name, Price, Category, Color, Size, Image URL) and delete items permanently via button-driven sub-menus.
-  * Verified that the **Store Owner** can retrieve daily sales revenue via a **`📊 View Daily Report`** home screen button.
+  * Verified that the **Stock Manager** (stock-manager role) can perform Stock In/Out directly via `[ ➕ Add 1/5/10 ]`, `[ ➖ Sub 1/5/10 ]`, `[ 🧹 Clear Stock ]` buttons, type custom values, or add new products to the catalog using the conversational wizard.
+  * Verified that the **Owner & Manager** (owner and manager roles) can securely edit product specifications, delete items permanently, retrieve rolling daily, weekly, or monthly sales and stock movement logs summaries via the new **`📊 View Reports`**, and manage, promote, ban, or delete user accounts using the **`👤 Manage Users`** panel.
   * Checked visual image rendering on product details pages using Unsplash photos.
 * **Zero-Crash Staging Assessment**: Checked `bot.catch(...)` and fallback routing. Inspected command parameters validation and error catch blocks. **Udom Vathana** and **Meuon Chettra** verified that the bot handles unhandled inputs (e.g. empty arguments in `/sell` or `/check_stock`, or unhandled media files/stickers) gracefully by responding with correct instructions instead of throwing exceptions.
 * **Production Deployment to Render**: Checked the backend server startup configurations on Render. Confirmed the Express server and PostgreSQL Neon DB integrations operate stably under long polling.
@@ -47,7 +46,7 @@
 ---
 
 ### 📈 Progress
-* [x] **Wiki Test Matrix Page**: Compiled with 24 comprehensive verification cases (happy paths, boundaries, and attacks).
+* [x] **Wiki Test Matrix Page**: Compiled with 36 comprehensive verification cases (happy paths, boundaries, and attacks).
 * [x] **Zero-Crash Checks**: All bot command parameters validated, exception blocks checked, and fallback media handler added.
 * [x] **Staging Link Integration**: Staging Telegram bot handle added to `README.md`.
 * [x] **Pull Request Merges**: All active developer branches merged into the main production branch.

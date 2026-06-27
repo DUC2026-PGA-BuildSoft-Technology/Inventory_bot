@@ -28,13 +28,13 @@ const showProductDetails = async (ctx, barcode, editMode = false) => {
 
   const quantityInList = salesListService.getQuantityInSalesList(telegramId, barcode);
   const user = await userService.findOrCreateUserByTelegram(ctx).then(res => res.user).catch(() => null);
-  const userRole = user ? user.role : 'staff';
+  const userRole = user ? user.role : 'seller';
 
   const text = [
     '🔎 <b>Product Details</b>',
     '',
     `<b>Product:</b> ${product.product_name}`,
-    `<b>Barcode:</b> <code>${product.barcode}</code>`,
+    `<b>Barcode:</b> <code>${product.barcode}</code> (${product.barcode.length} characters)`,
     `<b>Category:</b> ${product.category || '-'}`,
     `<b>Color/Size:</b> ${[product.color, product.size].filter(Boolean).join(' / ') || '-'}`,
     `<b>Price:</b> ${formatMoney(product.price)}`,
@@ -53,14 +53,17 @@ const showProductDetails = async (ctx, barcode, editMode = false) => {
   }
 
   keyboard.push(actionRow);
-  keyboard.push([{ text: '📋 View Sales List', callback_data: 'sales_list_view' }]);
+  keyboard.push([{ text: '📋 View Sales', callback_data: 'sales_list_view' }]);
   
-  // Render management options if authorized
+  // Render stock adjustment options for stock-manager, manager, owner, admin
+  if (userRole === 'stock-manager' || userRole === 'manager' || userRole === 'admin' || userRole === 'owner') {
+    keyboard.push([{ text: '🔧 Edit Stock', callback_data: `adjust_menu:${barcode}` }]);
+  }
+  // Render product editing and deletion options strictly for manager, owner, admin
   if (userRole === 'manager' || userRole === 'admin' || userRole === 'owner') {
-    keyboard.push([{ text: '🔧 Adjust Stock (Intake/Outtake)', callback_data: `adjust_menu:${barcode}` }]);
     keyboard.push([
-      { text: '✏️ Edit Product', callback_data: `edit_menu:${barcode}` },
-      { text: '❌ Delete Product', callback_data: `delete_confirm:${barcode}` }
+      { text: '✏️ Edit', callback_data: `edit_menu:${barcode}` },
+      { text: '❌ Delete', callback_data: `delete_confirm:${barcode}` }
     ]);
   }
   
@@ -145,7 +148,8 @@ const showStockAdjustmentMenu = async (ctx, barcode, editMode = false) => {
       { text: '➖ Sub 10', callback_data: `adj_sub:10:${barcode}` },
     ],
     [
-      { text: '✏️ Enter Custom Amount', callback_data: `adj_custom:${barcode}` }
+      { text: '✏️ Custom Amount', callback_data: `adj_custom:${barcode}` },
+      { text: '🧹 Clear Stock (Reset to 0)', callback_data: `adj_clear:${barcode}` }
     ],
     [
       { text: '🔙 Back to Product Details', callback_data: `stock:${barcode}` }
@@ -498,6 +502,12 @@ const registerStockAction = (bot) => {
         return;
       }
 
+      // Check role permissions
+      if (user.role !== 'stock-manager' && user.role !== 'manager' && user.role !== 'admin' && user.role !== 'owner') {
+        await ctx.answerCbQuery('Access Denied: Stock Manager permissions required.', { show_alert: true });
+        return;
+      }
+
       // Update database stock using stockService
       await stockService.updateStock(barcode, amount, user.id);
 
@@ -518,6 +528,12 @@ const registerStockAction = (bot) => {
       const { user } = await userService.findOrCreateUserByTelegram(ctx);
       if (!user) {
         await ctx.answerCbQuery('User registration error');
+        return;
+      }
+
+      // Check role permissions
+      if (user.role !== 'stock-manager' && user.role !== 'manager' && user.role !== 'admin' && user.role !== 'owner') {
+        await ctx.answerCbQuery('Access Denied: Stock Manager permissions required.', { show_alert: true });
         return;
       }
 
@@ -557,7 +573,7 @@ const registerStockAction = (bot) => {
       }
 
       // Check role permissions
-      if (user.role !== 'manager' && user.role !== 'admin' && user.role !== 'owner') {
+      if (user.role !== 'stock-manager' && user.role !== 'manager' && user.role !== 'admin' && user.role !== 'owner') {
         await ctx.answerCbQuery('Access Denied: Stock Manager permissions required.', { show_alert: true });
         return;
       }
@@ -585,6 +601,45 @@ const registerStockAction = (bot) => {
     } catch (err) {
       console.error('Error in adj_custom callback:', err);
       await ctx.answerCbQuery('Error loading custom prompt');
+    }
+  });
+
+  // Action: Clear Stock (Reset to 0)
+  bot.action(/^adj_clear:(.+)$/, async (ctx) => {
+    try {
+      const barcode = ctx.match[1];
+
+      const { user } = await userService.findOrCreateUserByTelegram(ctx);
+      if (!user) {
+        await ctx.answerCbQuery('User registration error');
+        return;
+      }
+
+      // Check role permissions
+      if (user.role !== 'stock-manager' && user.role !== 'manager' && user.role !== 'admin' && user.role !== 'owner') {
+        await ctx.answerCbQuery('Access Denied: Stock Manager permissions required.', { show_alert: true });
+        return;
+      }
+
+      const product = await productService.findProductByBarcode(barcode);
+      if (!product) {
+        await ctx.answerCbQuery('Product not found');
+        return;
+      }
+
+      if (product.stock_quantity === 0) {
+        await ctx.answerCbQuery('Stock is already 0', { show_alert: true });
+        return;
+      }
+
+      // Reset stock by subtracting the current stock count
+      await stockService.updateStock(barcode, -product.stock_quantity, user.id);
+
+      await ctx.answerCbQuery('Stock cleared to zero successfully!', { show_alert: true });
+      await showStockAdjustmentMenu(ctx, barcode, true);
+    } catch (err) {
+      console.error('Error in adj_clear callback:', err);
+      await ctx.answerCbQuery('Error resetting stock');
     }
   });
 

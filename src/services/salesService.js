@@ -6,7 +6,14 @@ const recordSale = async (barcode, quantity, userId) => {
   return productService.recordSaleByBarcode(barcode, quantity, userId);
 };
 
-const getTodaySalesReport = async () => {
+const getSalesReport = async (timeframe) => {
+  let intervalFilter = 'CURRENT_DATE';
+  if (timeframe === 'weekly') {
+    intervalFilter = "CURRENT_DATE - INTERVAL '7 days'";
+  } else if (timeframe === 'monthly') {
+    intervalFilter = "CURRENT_DATE - INTERVAL '30 days'";
+  }
+
   const sql = `
     SELECT 
       p.product_name, 
@@ -15,7 +22,7 @@ const getTodaySalesReport = async () => {
       SUM(s.total_price)::numeric(10,2) as total_amount
     FROM sales s
     JOIN products p ON s.product_id = p.id
-    WHERE s.sold_at >= CURRENT_DATE
+    WHERE s.sold_at >= ${intervalFilter}
     GROUP BY p.product_name, p.category
     ORDER BY total_amount DESC;
   `;
@@ -24,7 +31,7 @@ const getTodaySalesReport = async () => {
   const totalSql = `
     SELECT COALESCE(SUM(total_price), 0)::numeric(10,2) as grand_total 
     FROM sales 
-    WHERE sold_at >= CURRENT_DATE;
+    WHERE sold_at >= ${intervalFilter};
   `;
   const totalResult = await query(totalSql);
   const grandTotal = totalResult.rows[0].grand_total;
@@ -35,7 +42,12 @@ const getTodaySalesReport = async () => {
   };
 };
 
+const getTodaySalesReport = async () => {
+  return getSalesReport('daily');
+};
+
 module.exports = { 
   recordSale,
   getTodaySalesReport,
+  getSalesReport,
 };

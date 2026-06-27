@@ -146,7 +146,7 @@ const showSalesList = async (ctx, editMode = false) => {
     keyboard.push([{ text: '📋 Main Menu', callback_data: 'menu_view' }]);
   } else {
     items.forEach((item, index) => {
-      text += `${index + 1}. <b>${item.product.product_name}</b> (Barcode: <code>${item.product.barcode}</code>)\n`;
+      text += `${index + 1}. <b>${item.product.product_name}</b> (Barcode: <code>${item.product.barcode}</code>, ${item.product.barcode.length} chars)\n`;
       text += `   Qty: ${item.quantity} | Price: ${formatMoney(item.product.price)} | Subtotal: ${formatMoney(item.subtotal)}\n\n`;
     });
 

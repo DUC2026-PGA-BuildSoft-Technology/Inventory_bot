@@ -11,10 +11,10 @@ The table below maps each stakeholder's core need to the technical implementatio
 
 | Persona | Core Business Requirement | Technical Implementation | Rubric Traceability |
 | :--- | :--- | :--- | :--- |
-| **Owner (David)** | Real-time stock visibility; automatic deduction of sold items; daily reports. | Parameterized queries running atomic database commits; locks (`SELECT FOR UPDATE`) on sales checkouts. | **Stability & Defacement** (Ensures transactional integrity; zero stock count overlaps). |
-| **Seller 1 (Chettra)** | Fast communication; instantly check stock when customers ask. | Product catalog displays live stock balances on keyboard buttons (e.g., `Cotton T-Shirt (24)`). | **UI/UX & Integration** (Instant product visibility; no manual command lookups). |
-| **Seller 2 (Sochhiet)** | Difficulty generating sales data logs; wants to avoid out-of-stock items. | Dynamic inline keyboard navigation compiles a Sales List; writes to the database `sales` table on checkout. | **UI/UX & Integration** (Eliminates typed arguments; button-driven sales compiles). |
-| **Stock Manager** | High rate of manual data entry errors (forgotten logs); wants low-stock notifications. | Automatic database log entries inside the `stock_logs` table; trigger alerts written to `notifications`. | **Code Maintainability** (Modular service functions handle database audits). |
+| **Owner (David)** | Real-time stock visibility; automatic deduction of sold items; multi-timeframe reports (sales & stock); user management; catalog product additions. | Parameterized queries running atomic database commits; locks (`SELECT FOR UPDATE`) on sales checkouts; User Management inline panel; Multi-timeframe Reports Dashboard; product creation database inserts. | **Stability & Defacement** (Ensures transactional integrity; zero stock count overlaps; secure permissions; multi-timeframe aggregates). |
+| **Seller (Chettra)** | Fast communication; instantly check stock when customers ask. | Product catalog displays live stock balances on keyboard buttons (e.g., `Cotton T-Shirt (24)`). | **UI/UX & Integration** (Instant product visibility; no manual command lookups). |
+| **Seller (Sochhiet)** | Difficulty generating sales data logs; wants to avoid out-of-stock items. | Dynamic inline keyboard navigation compiles a Sales List; writes to the database `sales` table on checkout. | **UI/UX & Integration** (Eliminates typed arguments; button-driven sales compiles). |
+| **Stock Manager** | High rate of data entry errors; wants stock adjustments, clearing stock, notifications, stock movement audits, and catalog product additions. | Modular service functions handle adjustments, stock reset to 0, notifications logs, aggregated stock movement reports, and conversational product creation wizard. | **Code Maintainability** (Audit trails stored in logs table; boundary checks on balance; stock movement dashboard aggregation; conversational wizard state cache). |
 
 ---
 

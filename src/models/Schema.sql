@@ -4,7 +4,8 @@
     username VARCHAR(100),
     first_name VARCHAR(100),
     last_name VARCHAR(100),
-    role VARCHAR(30) NOT NULL DEFAULT 'staff',
+    role VARCHAR(30) NOT NULL DEFAULT 'seller',
+    status VARCHAR(30) NOT NULL DEFAULT 'active',
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP NOT NULL DEFAULT NOW()
     );

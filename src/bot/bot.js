@@ -1,4 +1,5 @@
 const { Telegraf } = require('telegraf');
+const userService = require('../services/userService');
 const { registerStartCommand } = require('../handlers/start/startCommand');
 const { registerHelpCommand } = require('../handlers/help/helpCommand');
 const { registerCatalogCommand } = require('../handlers/catalog/catalogCommand');
@@ -10,9 +11,33 @@ const { registerMenuCommand } = require('../handlers/menu/menuCommand');
 const { registerExchangeCommand } = require('../handlers/exchange/exchangeCommand');
 const { registerSalesListHandler } = require('../handlers/salesList/salesListHandler');
 const { registerOwnerReportCommand } = require('../handlers/owner/ownerReportCommand');
+const { registerUserManagementHandler } = require('../handlers/users/userManagementHandler');
+const { registerProductCreateHandler, handleProductCreateWizard } = require('../handlers/stock/productCreateHandler');
 const { handleCustomAdjustmentText, handleProductEditFieldText } = require('../handlers/stock/stockActionCommand');
+const { registerKeyboardHandler } = require('../handlers/menu/keyboardHandler');
 
 const bot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN);
+
+// Global Middleware to Intercept and Block Banned Users
+bot.use(async (ctx, next) => {
+  try {
+    if (ctx.from && ctx.from.id) {
+      // Fetch user profile status
+      const { user } = await userService.findOrCreateUserByTelegram(ctx).catch(() => ({ user: null }));
+      if (user && user.status === 'banned') {
+        if (ctx.callbackQuery) {
+          await ctx.answerCbQuery('❌ Access Denied: Your account has been banned.', { show_alert: true });
+        } else {
+          await ctx.reply('❌ Access Denied: Your account has been banned by the administrator.');
+        }
+        return; // Terminate update flow
+      }
+    }
+  } catch (err) {
+    console.error('Error in global ban intercept middleware:', err);
+  }
+  return next();
+});
 
 registerStartCommand(bot);
 registerHelpCommand(bot);
@@ -25,6 +50,9 @@ registerMenuCommand(bot);
 registerExchangeCommand(bot);
 registerSalesListHandler(bot);
 registerOwnerReportCommand(bot);
+registerUserManagementHandler(bot);
+registerProductCreateHandler(bot);
+registerKeyboardHandler(bot);
 
 // Global error handler to prevent Node server crashes (Zero-Crash Requirement)
 bot.catch((err, ctx) => {
@@ -44,6 +72,10 @@ bot.on('message', async (ctx) => {
     // Intercept if the user has an active product editing session
     const wasEditHandled = await handleProductEditFieldText(ctx);
     if (wasEditHandled) return;
+
+    // Intercept if the user has an active product creation session
+    const wasCreateHandled = await handleProductCreateWizard(ctx);
+    if (wasCreateHandled) return;
 
     const keyboard = [
       [{ text: '📖 View Catalog', callback_data: 'catalog_view' }],
@@ -82,7 +114,8 @@ const startBot = async () => {
       { command: 'help', description: 'Show help information' },
       { command: 'view_catalog', description: 'View the live product catalog' },
       { command: 'view_sales_list', description: 'View current sales transaction list' },
-      { command: 'owner_report', description: 'Show daily sales report (Owner only)' },
+      { command: 'owner_report', description: 'Show daily sales report (Owner/Manager only)' },
+      { command: 'manage_users', description: 'Manage user role permissions (Owner/Manager only)' },
       { command: 'check_stock', description: 'Check stock by barcode' },
       { command: 'sell', description: 'Record a sale' },
       { command: 'update_stock', description: 'Adjust inventory stock' },

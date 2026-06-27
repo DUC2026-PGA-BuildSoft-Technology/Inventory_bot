@@ -24,6 +24,14 @@ const deleteProduct = async (barcode) => {
   return productModel.deleteProduct(barcode);
 };
 
+const getStockMovementReport = async (timeframe) => {
+  return productModel.getStockMovementReport(timeframe);
+};
+
+const createProduct = async (details) => {
+  return productModel.createProduct(details);
+};
+
 module.exports = {
   listCatalogProducts,
   findProductByBarcode,
@@ -31,4 +39,6 @@ module.exports = {
   recordSaleByBarcode,
   updateProductField,
   deleteProduct,
+  getStockMovementReport,
+  createProduct,
 };

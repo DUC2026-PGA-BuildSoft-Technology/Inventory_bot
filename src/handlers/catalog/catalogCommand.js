@@ -1,15 +1,26 @@
 const productService = require('../../services/productService');
+const userService = require('../../services/userService');
 const { formatProductLine } = require('../../bot/helpers');
 
 const showCatalog = async (ctx, editMode = false) => {
   const products = await productService.listCatalogProducts();
 
+  const { user } = await userService.findOrCreateUserByTelegram(ctx).catch(() => ({ user: null }));
+  const role = user ? user.role : 'seller';
+
   if (products.length === 0) {
     const emptyMsg = 'Catalog is empty. Add products to the products table first.';
+    // If empty but user is authorized, allow adding a product
+    const emptyKeyboard = [];
+    if (role === 'owner' || role === 'manager' || role === 'stock-manager' || role === 'admin') {
+      emptyKeyboard.push([{ text: '➕ Add New Product', callback_data: 'product_add_start' }]);
+    }
+    emptyKeyboard.push([{ text: '📋 Main Menu', callback_data: 'menu_view' }]);
+
     if (editMode) {
-      await ctx.editMessageText(emptyMsg);
+      await ctx.editMessageText(emptyMsg, { reply_markup: { inline_keyboard: emptyKeyboard } }).catch(() => {});
     } else {
-      await ctx.reply(emptyMsg);
+      await ctx.reply(emptyMsg, { reply_markup: { inline_keyboard: emptyKeyboard } }).catch(() => {});
     }
     return;
   }
@@ -29,8 +40,13 @@ const showCatalog = async (ctx, editMode = false) => {
   ]);
 
   // Navigation shortcuts
-  keyboard.push([{ text: '📋 View Current Sale', callback_data: 'sales_list_view' }]);
-  keyboard.push([{ text: '📋 Main Menu', callback_data: 'menu_view' }]);
+  if (role === 'owner' || role === 'manager' || role === 'stock-manager' || role === 'admin') {
+    keyboard.push([{ text: '➕ Add New Product', callback_data: 'product_add_start' }]);
+  }
+  keyboard.push([
+    { text: '📋 View Sales', callback_data: 'sales_list_view' },
+    { text: '📋 Main Menu', callback_data: 'menu_view' }
+  ]);
 
   if (editMode) {
     try {

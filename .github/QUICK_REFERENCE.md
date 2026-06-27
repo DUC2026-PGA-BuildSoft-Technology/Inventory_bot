@@ -172,10 +172,21 @@ kill -9 <PID>
 - `src/server.js` - Start here
 - `src/app.js` - Express + Bot initialization
 
-**Core Logic**
-- `src/bot/bot.js` - Bot commands (/start, /help)
-- `src/models/userModel.js` - Database queries
-- `src/services/userService.js` - Business logic
+**Core Logic Services**
+- `src/services/userService.js` - Profile, roles, and ban checks
+- `src/services/productService.js` - Inventory catalog & wizard wizard
+- `src/services/salesService.js` - Sales transaction recorder & reports
+- `src/services/salesListService.js` - Cart manager & locks coordinator
+- `src/services/stockService.js` - Incremental auditing adjustments
+- `src/services/apiService.js` - External Unsplash asset fetching
+
+**Database Models**
+- `src/models/userModel.js` - User table queries
+- `src/models/productModel.js` - Product table queries & locks
+- `src/models/Schema.sql` - Table schema statements
+
+**Bot Controllers**
+- `src/bot/bot.js` - Router engine and command hook setups
 
 **Configuration**
 - `.env` - Environment secrets (not committed)

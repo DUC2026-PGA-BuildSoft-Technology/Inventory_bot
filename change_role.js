@@ -12,8 +12,8 @@ const changeUserRole = async () => {
 
   if (!telegramIdText || !newRole) {
     console.log('\n❌ Usage: node change_role.js [telegram_id] [role]');
-    console.log('💡 Example: node change_role.js 123456789 manager');
-    console.log('💡 Available Roles: staff, manager, admin, owner\n');
+    console.log('💡 Example: node change_role.js 123456789 owner');
+    console.log('💡 Available Roles: seller, stock-manager, manager, owner\n');
     process.exit(1);
   }
 

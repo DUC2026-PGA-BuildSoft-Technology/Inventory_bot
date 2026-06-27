@@ -29,8 +29,43 @@ const findOrCreateUserByTelegram = async (ctx) => {
   return { user, isNew };
 };
 
+const listAllUsers = async () => {
+  return userModel.listAllUsers();
+};
+
+const updateUserRole = async (userId, newRole) => {
+  return userModel.updateUserRole(userId, newRole);
+};
+
+const updateUserStatus = async (userId, newStatus) => {
+  return userModel.updateUserStatus(userId, newStatus);
+};
+
+const deleteUser = async (userId) => {
+  return userModel.deleteUser(userId);
+};
+
+const getUserSalesHistory = async (userId) => {
+  return userModel.getUserSalesHistory(userId);
+};
+
+const getUserStockHistory = async (userId) => {
+  return userModel.getUserStockHistory(userId);
+};
+
+const getGlobalHistory = async () => {
+  return userModel.getGlobalHistory();
+};
+
 module.exports = {
   findUserByTelegramId,
   createUser,
   findOrCreateUserByTelegram,
+  listAllUsers,
+  updateUserRole,
+  updateUserStatus,
+  deleteUser,
+  getUserSalesHistory,
+  getUserStockHistory,
+  getGlobalHistory,
 };
