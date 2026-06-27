@@ -9,6 +9,10 @@ const createUser = async (telegramId, username, firstName, lastName) => {
 };
 
 const findOrCreateUserByTelegram = async (ctx) => {
+  if (!ctx || !ctx.from || !ctx.from.id) {
+    throw new Error('Invalid Telegram session: User ID not found');
+  }
+
   const telegramId = ctx.from.id;
   const username = ctx.from.username || 'Unknown';
   const firstName = ctx.from.first_name || 'Friend';

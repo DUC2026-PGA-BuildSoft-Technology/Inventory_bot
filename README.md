@@ -1,5 +1,7 @@
 #  Smart-Stock Inventory Bot
 
+### 🤖 Live Staging Bot: [@your_telegram_bot_handle](https://t.me/your_telegram_bot_handle)
+
 A Telegram-based inventory management system built with Node.js, Express.js, and PostgreSQL for wholesale shops in Orussey Market.
 
 Developed for the Software Project Development course (2026).

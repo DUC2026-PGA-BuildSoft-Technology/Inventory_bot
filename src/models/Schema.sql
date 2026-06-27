@@ -19,6 +19,7 @@
     stock_quantity INTEGER NOT NULL DEFAULT 0 CHECK (stock_quantity >= 0),
     price NUMERIC(10, 2) NOT NULL DEFAULT 0 CHECK (price >= 0),
     status VARCHAR(30) NOT NULL DEFAULT 'active',
+    image_url VARCHAR(500),
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP NOT NULL DEFAULT NOW()
     );

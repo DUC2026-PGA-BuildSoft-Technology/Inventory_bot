@@ -4,7 +4,7 @@ const LOW_STOCK_LIMIT = 5;
 
 const listCatalogProducts = async () => {
   const result = await query(
-    `SELECT id, barcode, product_name, category, color, size, stock_quantity, price, status
+    `SELECT id, barcode, product_name, category, color, size, stock_quantity, price, status, image_url
      FROM products
      ORDER BY category NULLS LAST, product_name ASC
      LIMIT 20`
@@ -15,7 +15,7 @@ const listCatalogProducts = async () => {
 
 const findProductByBarcode = async (barcode) => {
   const result = await query(
-    `SELECT id, barcode, product_name, category, color, size, stock_quantity, price, status
+    `SELECT id, barcode, product_name, category, color, size, stock_quantity, price, status, image_url
      FROM products
      WHERE barcode = $1`,
     [barcode]
@@ -41,7 +41,7 @@ const updateStockByBarcode = async (barcode, quantity, userId, note = 'Manual st
            updated_at = NOW()
        WHERE barcode = $1
          AND stock_quantity + $2 >= 0
-       RETURNING id, barcode, product_name, stock_quantity, status`,
+       RETURNING id, barcode, product_name, stock_quantity, status, image_url`,
       [barcode, quantity, LOW_STOCK_LIMIT]
     );
 
@@ -72,7 +72,7 @@ const updateStockByBarcode = async (barcode, quantity, userId, note = 'Manual st
       await client.query(
         `INSERT INTO notifications (product_id, message, status)
          VALUES ($1, $2, 'unread')`,
-        [product.id, `${product.product_name} is low stock: ${product.stock_quantity} left`]
+         [product.id, `${product.product_name} is low stock: ${product.stock_quantity} left`]
       );
     }
 
@@ -130,7 +130,7 @@ const recordSaleByBarcode = async (barcode, quantity, userId) => {
            END,
            updated_at = NOW()
        WHERE id = $1
-       RETURNING id, barcode, product_name, stock_quantity, price, status`,
+       RETURNING id, barcode, product_name, stock_quantity, price, status, image_url`,
       [product.id, quantity, LOW_STOCK_LIMIT]
     );
 
@@ -166,9 +166,35 @@ const recordSaleByBarcode = async (barcode, quantity, userId) => {
   }
 };
 
+const updateProductField = async (barcode, field, value) => {
+  const allowedFields = ['product_name', 'category', 'color', 'size', 'price', 'image_url'];
+  if (!allowedFields.includes(field)) {
+    throw new Error(`Field ${field} is not allowed for update`);
+  }
+
+  const queryText = `
+    UPDATE products
+    SET ${field} = $2, updated_at = NOW()
+    WHERE barcode = $1
+    RETURNING id, barcode, product_name, category, color, size, stock_quantity, price, status, image_url;
+  `;
+  const result = await query(queryText, [barcode, value]);
+  return result.rows.length > 0 ? result.rows[0] : null;
+};
+
+const deleteProduct = async (barcode) => {
+  const result = await query(
+    `DELETE FROM products WHERE barcode = $1 RETURNING *`,
+    [barcode]
+  );
+  return result.rows.length > 0 ? result.rows[0] : null;
+};
+
 module.exports = {
   listCatalogProducts,
   findProductByBarcode,
   updateStockByBarcode,
   recordSaleByBarcode,
+  updateProductField,
+  deleteProduct,
 };
