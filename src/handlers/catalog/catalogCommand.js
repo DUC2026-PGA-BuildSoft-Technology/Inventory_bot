@@ -2,7 +2,7 @@ const productService = require('../../services/productService');
 const userService = require('../../services/userService');
 const { formatProductLine } = require('../../bot/helpers');
 
-const showCatalog = async (ctx, editMode = false) => {
+const showCatalog = async (ctx, editMode = false, page = 0) => {
   const products = await productService.listCatalogProducts();
 
   const { user } = await userService.findOrCreateUserByTelegram(ctx).catch(() => ({ user: null }));
@@ -25,19 +25,41 @@ const showCatalog = async (ctx, editMode = false) => {
     return;
   }
 
+  // Paginate products (5 items per page)
+  const itemsPerPage = 5;
+  const totalPages = Math.ceil(products.length / itemsPerPage);
+  let currentPage = page;
+  if (currentPage >= totalPages) currentPage = totalPages - 1;
+  if (currentPage < 0) currentPage = 0;
+
+  const startIndex = currentPage * itemsPerPage;
+  const pageProducts = products.slice(startIndex, startIndex + itemsPerPage);
+
   const catalogText = [
-    '📖 <b>Live Product Catalog</b>',
+    `📖 <b>Live Product Catalog (Page ${currentPage + 1}/${totalPages})</b>`,
     `Updated from database: ${new Date().toLocaleString()}`,
     '',
-    ...products.map(formatProductLine),
+    ...pageProducts.map(formatProductLine),
   ].join('\n');
 
-  const keyboard = products.slice(0, 10).map((product) => [
+  const keyboard = pageProducts.map((product) => [
     {
       text: `${product.product_name} (${product.stock_quantity})`,
       callback_data: `stock:${product.barcode}`,
     },
   ]);
+
+  // Pagination navigation row
+  if (totalPages > 1) {
+    const navRow = [];
+    if (currentPage > 0) {
+      navRow.push({ text: '◀️ Prev', callback_data: `catalog_page:${currentPage - 1}` });
+    }
+    if (currentPage < totalPages - 1) {
+      navRow.push({ text: 'Next ▶️', callback_data: `catalog_page:${currentPage + 1}` });
+    }
+    keyboard.push(navRow);
+  }
 
   // Navigation shortcuts
   if (role === 'owner' || role === 'manager' || role === 'stock-manager' || role === 'admin') {
@@ -95,6 +117,18 @@ const registerCatalogCommand = (bot) => {
     } catch (err) {
       console.error('Error in catalog_view action:', err);
       await ctx.answerCbQuery('Error loading catalog');
+    }
+  });
+
+  // Action: catalog pagination callback
+  bot.action(/^catalog_page:(\d+)$/, async (ctx) => {
+    try {
+      await ctx.answerCbQuery();
+      const page = parseInt(ctx.match[1], 10);
+      await showCatalog(ctx, true, page);
+    } catch (err) {
+      console.error('Error in catalog_page action:', err);
+      await ctx.answerCbQuery('Error loading page');
     }
   });
 };

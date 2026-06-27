@@ -1,0 +1,55 @@
+Slide 1: Title
+Title: Smart-Stock Inventory Bot
+Subtitle: Next-Gen Conversational Inventory Management System
+Context: Course project for Software Project Development (2026).
+Description: A full-stack solution connecting a conversational Telegram interface, a responsive web management dashboard, and a secure PostgreSQL database. Designed for wholesale shop owners and sellers in Orussey Market.
+
+Slide 2: Problem & Solution
+Title: Problem & Solution
+The Problem: Shopkeepers in Orussey Market face complex cataloging issues, manual tracking errors for sizes/colors, loss of sales from lack of stock alerts, and complex traditional ERP software.
+The Solution: A conversational Telegram bot for staff to manage inventory on the go, a persistent button menu for quick navigation, and a synced web dashboard.
+
+Slide 3: Technology Stack
+Title: Technology Stack
+Backend Core: Node.js and Express.js for API routing and server runtime.
+Interface: Telegraf and Telegram API for conversational messaging.
+Database: PostgreSQL hosted on Neon DB for secure relational storage.
+Media Storage: Cloudinary for product image hosting.
+Testing: Mock and Assert library for technical staging audits.
+
+Slide 4: Architecture Design
+Title: Architecture Design
+Structure: Decoupled design connecting the Telegram client and Web Dashboard to an Express server. Business logic services execute product, user, and transaction updates, which are persisted in a secure PostgreSQL database.
+
+Slide 5: Key Project Features
+Title: Key Project Features
+- Conversational UX: Step-by-step product creation wizard (/add_product) with /skip support, plus a persistent bottom navigation menu.
+- Catalog & Stock: 5-product-per-page catalog pagination with Prev/Next controls, barcode check_stock, and direct update_stock commands.
+- Transactions & Audits: Auto-deducted inventory levels on sales checkouts (/sell), real-time USD/KHR exchange rates (/exchange), and role-based audit history.
+- Management & Safety: User promotion and ban/unban commands (/manage_users) combined with zero-crash input validation controls.
+
+Slide 6: Live Catalog Pagination
+Title: Live Catalog Pagination
+Features:
+- Dynamic page limit displaying a clean 5 products per page.
+- Prev and Next navigation buttons on the keyboard to switch pages.
+- Reduces chat clutter by editing a single interactive catalog message.
+
+Slide 7: Resilience & Testing
+Title: Resilience & Testing
+Zero-Crash Design: Implemented with global error catching and input validation to protect the bot against invalid text commands or SQL injection.
+Test Suites: Complete coverage using unit tests for formatting, integration tests for user access controls, and end-to-end tests for wizard walkthroughs.
+
+Slide 8: Project Summary
+Title: Project Summary
+- Target Reached: Delivered a robust conversational bot for shopkeepers in Orussey Market to track stock and sales in real time.
+- Production Ready: Zero-crash design protects operations, validated by a comprehensive unit, integration, and E2E test matrix.
+- Impact: Decoupled architecture merges mobile ease-of-use with database safety and Cloudinary image hosting.
+- Next Steps: Adding multilingual support, session persistence, and instant low-stock notifications.
+
+Slide 9: Conclusion
+Title: Conclusion
+- Conversational Empowerment: Successfully simplified inventory management for traditional Orussey Market sellers using an intuitive Telegram interface that replaces manual notebook logs.
+- Technical Synergy: Seamless real-time data sync between mobile staff (Telegram Bot) and back-office management (Express Web Dashboard).
+- High Compliance: Zero-crash safety and security backed by a comprehensive unit, integration, and E2E test matrix.
+- Accessible Tech: Smart-Stock proves that workflow automation does not require expensive devices or complex training—just a secure chat window.

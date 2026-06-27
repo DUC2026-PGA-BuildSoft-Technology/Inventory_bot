@@ -26,6 +26,11 @@ const registerStartCommand = (bot) => {
       const { user } = await userService.findOrCreateUserByTelegram(ctx);
       const role = user ? user.role : 'seller';
 
+      // Initialize and display the bottom reply keyboard
+      await ctx.reply(`Welcome!! ${fullName}!!`, {
+        reply_markup: mainReplyKeyboard,
+      });
+
       const welcomeText = [
         '📋 <b>Smart-Stock Inventory</b>',
         '━━━━━━━━━━━━━━━━━━',

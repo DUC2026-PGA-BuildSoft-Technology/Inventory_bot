@@ -64,17 +64,17 @@ const handleProductCreateWizard = async (ctx) => {
         }
         session.details.category = text;
         session.step = 'color';
-        await ctx.reply('Step 4/8: Please enter the product <b>Color</b>:\n\n<i>Type - to skip, or /cancel to abort.</i>', { parse_mode: 'HTML' });
+        await ctx.reply('Step 4/8: Please enter the product <b>Color</b>:\n\n<i>Type /skip to skip, or /cancel to abort.</i>', { parse_mode: 'HTML' });
         break;
       }
       case 'color': {
-        session.details.color = text === '-' ? '' : text;
+        session.details.color = (text === '-' || text === '/skip') ? '' : text;
         session.step = 'size';
-        await ctx.reply('Step 5/8: Please enter the product <b>Size</b>:\n\n<i>Type - to skip, or /cancel to abort.</i>', { parse_mode: 'HTML' });
+        await ctx.reply('Step 5/8: Please enter the product <b>Size</b>:\n\n<i>Type /skip to skip, or /cancel to abort.</i>', { parse_mode: 'HTML' });
         break;
       }
       case 'size': {
-        session.details.size = text === '-' ? '' : text;
+        session.details.size = (text === '-' || text === '/skip') ? '' : text;
         session.step = 'stock_quantity';
         await ctx.reply('Step 6/8: Please enter the initial <b>Stock Quantity</b> (integer >= 0):\n\n<i>Type /cancel to abort.</i>', { parse_mode: 'HTML' });
         break;
@@ -98,7 +98,7 @@ const handleProductCreateWizard = async (ctx) => {
         }
         session.details.price = priceVal;
         session.step = 'image_url';
-        await ctx.reply('Step 8/8: Please upload a <b>Product Image</b> (or paste an image URL):\n\n<i>Type - to skip, or /cancel to abort.</i>', { parse_mode: 'HTML' });
+        await ctx.reply('Step 8/8: Please upload a <b>Product Image</b> (or paste an image URL):\n\n<i>Type /skip to skip, or /cancel to abort.</i>', { parse_mode: 'HTML' });
         break;
       }
       case 'image_url': {
@@ -106,7 +106,7 @@ const handleProductCreateWizard = async (ctx) => {
         if (ctx.message.photo) {
           const photo = ctx.message.photo;
           imageUrl = photo[photo.length - 1].file_id;
-        } else if (text && text !== '-') {
+        } else if (text && text !== '-' && text !== '/skip') {
           imageUrl = text;
         } else {
           imageUrl = 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500'; // Default placeholder

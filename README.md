@@ -45,7 +45,7 @@ Smart-Stock integrates several technologies into a complete inventory platform:
 # ✨ Key Features
 
 ### 📦 Product & Stock Management
-* **Conversational Wizard**: Step-by-step product creation flow (`/add_product`) with validation, skipping, and cancelling steps.
+* **Conversational Wizard**: Step-by-step product creation flow (`/add_product`) with validation, `/skip` (or `-`) skipping, and cancelling steps.
 * **Barcode Character Counting**: Display length of barcode inputs (e.g. `885001 (6 characters)`) across views.
 * **Inventory Control**: Update stock quantities, manage statuses (Active, Low Stock, Out of Stock). Low Stock is defined as stock quantity <= 5.
 * **Cloudinary Image Upload**: Upload and display product images on the web dashboard.
@@ -55,8 +55,9 @@ Smart-Stock integrates several technologies into a complete inventory platform:
 * **Role-Based History Logs**: Customized audit trails for Sellers (checkouts), Stock Managers (adjustments), and Owners (global actions).
 * **ERP-Grade Stock Audit Reports**: Timeframe lists of Intakes, Outflows, New Product registrations, Specification Updates, Deletions, and Low Stock Alerts.
 
-### 🤖 telegram Interface & UX
+### 🤖 Telegram Interface & UX
 * **Dynamic Navigation Layouts**: Persistent bottom Reply Keyboard (`📋 Main Menu`, `📖 View Catalog`, `⏳ History`, `👤 Profile`).
+* **Interactive Catalog Pagination**: Shows a clean **5 products per page** view with dynamic `◀️ Prev` and `Next ▶️` inline keyboard navigation buttons.
 * **Single-Message Interactive Dashboards**: Main Menu dashboard card for clean navigation.
 * **Exchange Rate Lookups**: Real-time USD → KHR conversion using `/exchange`.
 * **Zero-Crash Staging Compliance**: Complete input parameter sanitization and exception fallback handlers.
