@@ -1,40 +1,107 @@
-#  Smart-Stock Inventory Bot
+# Smart-Stock Inventory Bot
 
-A Telegram-based inventory management system built with Node.js, Express.js, and PostgreSQL for wholesale shops in Orussey Market.
-
-Developed for the Software Project Development course (2026).
-
----
-
-#  Features
-
-- Telegram user registration via `/start`
-- Live product catalog display from PostgreSQL
-- Stock lookup by barcode with `/check_stock`
-- Sales recording through `/sell`
-- Stock adjustment using `/update_stock`
-- USD → KHR exchange rate via `/exchange`
-- Inventory activity logging and low-stock notifications
-- Simple Express health checks for server and database
+A professional inventory management application built for the Software Project Development course.
+This system combines a Telegram bot, a responsive web dashboard, Cloudinary-powered image management, and a Neon/PostgreSQL backend.
 
 ---
 
-#  Tech Stack
+## 📑 Table of Contents
+- [Project Summary](#project-summary)
+- [What This Project Demonstrates](#what-this-project-demonstrates)
+- [Key Features](#key-features)
+- [Technology Stack](#technology-stack)
+- [Architecture Overview](#architecture-overview)
+- [Repository Structure](#repository-structure)
+- [Requirements](#requirements)
+- [Environment Configuration](#environment-configuration)
+- [Setup Instructions](#setup-instructions)
+- [Web Dashboard Features](#web-dashboard-features)
+- [Telegram Bot Commands](#telegram-bot-commands)
+- [Development Notes](#development-notes)
+- [Professional Project Highlights](#professional-project-highlights)
+- [Run Commands](#run-commands)
+- [License](#license)
 
-| Technology | Purpose |
+---
+
+## Project Summary
+
+Smart-Stock is designed to support wholesale inventory operations with a clean user experience for both Telegram users and dashboard administrators.
+It enables product CRUD, stock tracking, sales recording, inventory alerts, and team access management in one integrated solution.
+
+[⬆ Back to Top](#smart-stock-inventory-bot)
+
+---
+
+## What This Project Demonstrates
+
+- **Full-stack JavaScript development** using Node.js and Express
+- **Telegram bot integration** with Telegraf
+- **Cloud-hosted PostgreSQL** database support (Neon-compatible)
+- **Responsive dashboard UI** built with HTML, CSS, and vanilla JavaScript
+- **Image upload and storage** using Cloudinary
+- **Separation of concerns** using handlers, services, and models
+- **Professional project structure** suitable for academic presentation
+
+[⬆ Back to Top](#smart-stock-inventory-bot)
+
+---
+
+## Key Features
+
+- **Product Catalog Management:** Create, edit, and delete operations.
+- **Responsive Dashboard:** Optimized for both desktop and mobile views.
+- **Image Upload:** Product image integration through Cloudinary.
+- **Access Management:** Admin creation for seller and manager roles using Telegram IDs.
+- **Stock Status Indicators:** Easily identify `active`, `low_stock`, and `out_of_stock` items.
+- **Telegram Commands:** Quick access for stock lookup, sales, and stock updates directly from chat.
+- **Live Dashboard Metrics:** Monitor inventory levels and admin counts at a glance.
+- **Health Checks:** Built-in monitoring for server and database connectivity.
+
+[⬆ Back to Top](#smart-stock-inventory-bot)
+
+---
+
+## Technology Stack
+
+| Component | Technology |
 | :--- | :--- |
-| Node.js | Backend |
-| Express.js | API framework |
-| PostgreSQL | Database |
-| Telegraf | Telegram bot |
-| Axios | External HTTP requests |
+| **Backend** | Node.js, Express.js |
+| **Telegram** | Telegraf |
+| **Database** | PostgreSQL / Neon |
+| **Frontend** | HTML, CSS, JavaScript |
+| **Storage** | Cloudinary |
+| **HTTP Client** | Axios |
+
+[⬆ Back to Top](#smart-stock-inventory-bot)
 
 ---
 
-#  Project Structure
+## Architecture Overview
+
+The repository uses a modular architecture to keep features maintainable and scalable.
+
+- `src/bot` — Telegram bot initialization and command registration
+- `src/handlers` — Command handlers and bot interaction logic
+- `src/services` — Business logic and external API coordination
+- `src/models` — Database access and SQL query logic
+- `src/config` — Database configuration and shared connection pool
+- `dashboard` — Frontend assets for the web dashboard
+- `src/app.js` — API routes and dashboard integration
+- `src/server.js` — Application bootstrap and server startup
+
+[⬆ Back to Top](#smart-stock-inventory-bot)
+
+---
+
+## Repository Structure
 
 ```text
 Inventory_bot/
+├── dashboard/
+│   ├── index.html
+│   ├── script.js
+│   └── styles.css
 ├── src/
 │   ├── bot/
 │   │   ├── bot.js
@@ -75,161 +142,3 @@ Inventory_bot/
 ├── .gitignore
 ├── package.json
 └── README.md
-```
-
-This project uses a handler-service-model pattern:
-- Handlers receive Telegram commands, validate input, call services, and reply.
-- Services contain business logic and coordinate database or external API calls.
-- Models contain low-level database queries.
-
----
-
-## Requirements
-
-- Node.js 14+ (or later)
-- PostgreSQL database
-- Telegram bot token
-
----
-
-## Setup
-
-1. Clone the repository:
-
-```bash
-git clone <repository-url>
-cd Inventory_bot
-```
-
-2. Install dependencies:
-
-```bash
-npm install
-```
-
-3. Create a `.env` from `.env.example` and set the required variables.
-
-4. Start the app:
-
-```bash
-npm run dev
-```
-
----
-
-#  Environment Variables
-
-```env
-TELEGRAM_BOT_TOKEN=your_token_here
-DATABASE_URL=postgresql://username:password@host:port/database?sslmode=verify-full&channel_binding=require
-PORT=3000
-```
-
----
-
-#  Telegram Commands
-
-Use the following commands from the Telegram bot chat:
-
-- `/start` — register user and receive welcome message
-- `/help` — view available bot commands
-- `/menu` — show the command menu
-- `/view_catalog` — list live products from the database
-- `/check_stock [barcode]` — show stock details for a product
-- `/sell [barcode] [qty]` — record a sale and reduce stock
-- `/update_stock [barcode] [qty]` — adjust product stock quantity
-- `/exchange` — fetch the USD → KHR exchange rate
-
-Example:
-
-```bash
-/check_stock 885001
-/sell 885001 2
-/update_stock 885001 5
-/exchange
-/view_catalog
-```
-
----
-
-# `/exchange` Feature
-
-The `/exchange` command calls `src/services/apiService.js` and retrieves a live USD to KHR rate from a public API.
-
-Example bot reply:
-
-```text
-USD → KHR Exchange Rate
-
-1 USD = 4,100 KHR
-```
-
-If the external API fails, the bot replies with:
-
-```text
-Unable to retrieve exchange rate. Please try again later.
-```
-
----
-
-## Run the App
-
-Start in development mode:
-
-```bash
-npm run dev
-```
-
-Production start:
-
-```bash
-npm start
-```
-
-The app listens on the `PORT` value from `.env` (default `3000`).
-
----
-
-## Database Setup
-
-Create database tables:
-
-```bash
-psql "$DATABASE_URL" -f src/models/Schema.sql
-```
-
-Seed demo data:
-
-```bash
-psql "$DATABASE_URL" -f src/models/seed.sql
-```
-
----
-
-## Clean Architecture
-
-This repository is organized to separate concerns:
-- `src/handlers` handles Telegram commands
-- `src/services` contains business logic and service integrations
-- `src/models` contains database access logic
-- `src/bot/bot.js` is the main Telegraf startup and command registration file
-
----
-
-## Git Workflow
-
-Use feature branches and descriptive commit messages:
-
-```bash
-git checkout -b feat/exchange-command
-npm install
-npm run dev
-./commit.sh "Add /exchange feature and API service"
-git push origin feat/exchange-command
-```
-
----
-
-## License
-
-MIT License
