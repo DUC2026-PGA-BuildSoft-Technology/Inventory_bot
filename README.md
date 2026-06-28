@@ -1,11 +1,12 @@
 # Smart-Stock Inventory Bot
 
 ### Live Staging Bot
+
 https://t.me/SmartStockInventoryBot
 
-Smart-Stock is a full-stack inventory management system that combines a **Telegram Bot**, a **Responsive Web Dashboard**, **Cloudinary-powered image management**, and a **PostgreSQL (Neon)** backend into one integrated solution.
+Smart-Stock is a **Telegram-based inventory management system** that helps wholesale shops efficiently manage products, inventory, sales records, and administrators through a conversational interface.
 
-Developed for the course **Software Project Development (2026)**, it is designed for wholesale shops in Orussey Market to efficiently manage products, inventory, sales, and administrators.
+Developed for the course **Software Project Development (2026)**, the system uses a **Telegram Bot**, **Node.js**, **Express.js**, and **PostgreSQL (Neon)** to provide a simple and efficient inventory management solution without requiring a web dashboard.
 
 ---
 
@@ -13,25 +14,25 @@ Developed for the course **Software Project Development (2026)**, it is designed
 
 # Table of Contents
 
-- [Project Summary](#project-summary)
-- [Key Features](#key-features)
-- [Technology Stack](#technology-stack)
-- [Architecture Overview](#architecture-overview)
-- [Repository Structure](#repository-structure)
-- [System Workflow](#system-workflow)
-- [User Roles & Permissions](#user-roles--permissions)
-- [Database Schema Overview](#database-schema-overview)
-- [Requirements](#requirements)
-- [Environment Configuration](#environment-configuration)
-- [Installation](#installation)
-- [Running the Project](#running-the-project)
-- [Running Staging Test Suite](#running-staging-test-suite)
-- [Web Dashboard Features](#web-dashboard-features)
-- [Telegram Bot Commands](#telegram-bot-commands)
-- [API Endpoints](#api-endpoints)
-- [Development Notes](#development-notes)
-- [Professional Project Highlights](#professional-project-highlights)
-- [License](#license)
+* [Project Summary](#project-summary)
+* [Key Features](#key-features)
+* [Technology Stack](#technology-stack)
+* [Architecture Overview](#architecture-overview)
+* [Repository Structure](#repository-structure)
+* [System Workflow](#system-workflow)
+* [User Roles & Permissions](#user-roles--permissions)
+* [Database Schema Overview](#database-schema-overview)
+* [Requirements](#requirements)
+* [Environment Configuration](#environment-configuration)
+* [Installation](#installation)
+* [Running the Project](#running-the-project)
+* [Running Test Suite](#running-test-suite)
+* [Telegram Bot Features](#telegram-bot-features)
+* [Telegram Bot Commands](#telegram-bot-commands)
+* [API Endpoints](#api-endpoints)
+* [Development Notes](#development-notes)
+* [Professional Project Highlights](#professional-project-highlights)
+* [License](#license)
 
 ---
 
@@ -39,13 +40,15 @@ Developed for the course **Software Project Development (2026)**, it is designed
 
 # Project Summary
 
-Smart-Stock integrates several technologies into one inventory platform.
+Smart-Stock is a Telegram-based inventory management platform that integrates multiple backend technologies into one system.
 
-- Telegram Bot
-- Responsive Web Dashboard
-- PostgreSQL (Neon)
-- Cloudinary
-- REST API
+Main components:
+
+* Telegram Bot
+* Express.js REST API
+* PostgreSQL (Neon)
+* Inventory Management
+* Sales Management
 
 [⬆ Back to Top](#top)
 
@@ -55,26 +58,32 @@ Smart-Stock integrates several technologies into one inventory platform.
 
 # Key Features
 
-## Product & Stock Management
+## Inventory Management
 
-- Conversational Product Wizard
-- Barcode Character Counter
-- Inventory Control
-- Cloudinary Image Upload
+* Conversational Product Wizard
+* Product Registration
+* Barcode Character Counter
+* Inventory Control
+* Product Search
+* Product Update
+* Product Deletion
 
-## Sales & Reporting
+## Sales Management
 
-- Sales Recording
-- Stock Reports
-- History Logs
+* Sales Recording
+* Stock Adjustment
+* Sales History
+* Transaction Logs
 
 ## Telegram Bot
 
-- Reply Keyboard
-- Inline Pagination
-- Dashboard
-- Exchange Rate
-- Validation
+* Reply Keyboard
+* Inline Keyboard
+* Pagination
+* Conversation Wizard
+* Exchange Rate Lookup
+* Input Validation
+* Error Handling
 
 [⬆ Back to Top](#top)
 
@@ -84,15 +93,15 @@ Smart-Stock integrates several technologies into one inventory platform.
 
 # Technology Stack
 
-| Layer | Technology |
-|-------|------------|
-| Backend | Node.js |
-| API | Express.js |
-| Telegram | Telegraf |
-| Database | PostgreSQL (Neon) |
-| Image Storage | Cloudinary |
-| Frontend | HTML CSS JavaScript |
-| Testing | Mocha |
+| Layer              | Technology        |
+| ------------------ | ----------------- |
+| Runtime            | Node.js           |
+| Backend Framework  | Express.js        |
+| Telegram Framework | Telegraf          |
+| Database           | PostgreSQL (Neon) |
+| API Style          | REST API          |
+| Testing            | Mocha             |
+| Version Control    | Git & GitHub      |
 
 [⬆ Back to Top](#top)
 
@@ -103,23 +112,25 @@ Smart-Stock integrates several technologies into one inventory platform.
 # Architecture Overview
 
 ```text
-                   Client
-                      │
-      ┌───────────────┴───────────────┐
-Telegram Bot                    Web Dashboard
-      └───────────────┬───────────────┘
-                      │
-                Express Server
-                      │
-      ┌───────────────┼───────────────┐
-   Handlers        Services        API Routes
-      └───────────────┬───────────────┘
-                      │
-               Business Logic
-                      │
-                 Data Models
-                      │
-              PostgreSQL (Neon)
+              Telegram User
+                    │
+                    ▼
+             Telegram Bot
+                    │
+                    ▼
+             Express Server
+                    │
+      ┌─────────────┼─────────────┐
+      │             │             │
+  Handlers      API Routes    Middleware
+      │             │             │
+      └─────────────┼─────────────┘
+                    │
+             Business Logic
+                    │
+                Data Models
+                    │
+             PostgreSQL (Neon)
 ```
 
 [⬆ Back to Top](#top)
@@ -135,16 +146,16 @@ Smart-Stock/
 │
 ├── bot/
 ├── handlers/
-├── services/
 ├── routes/
 ├── middleware/
 ├── models/
 ├── config/
-├── dashboard/
-├── public/
+├── services/
+├── database/
 ├── tests/
-├── uploads/
 ├── package.json
+├── package-lock.json
+├── .env
 └── README.md
 ```
 
@@ -156,13 +167,13 @@ Smart-Stock/
 
 # System Workflow
 
-1. User sends command to Telegram Bot.
-2. Bot validates input.
-3. Express receives request.
-4. Business logic processes request.
-5. PostgreSQL stores data.
-6. Cloudinary stores images.
-7. Dashboard displays updated information.
+1. User sends a command or message to the Telegram Bot.
+2. Bot validates the received input.
+3. Express.js receives the request.
+4. Business logic processes the request.
+5. PostgreSQL stores or retrieves data.
+6. Bot formats the response.
+7. User receives the updated inventory information.
 
 [⬆ Back to Top](#top)
 
@@ -172,11 +183,11 @@ Smart-Stock/
 
 # User Roles & Permissions
 
-| Role | Permissions |
-|------|-------------|
-| Owner | Full Access |
-| Stock Manager | Inventory Management |
-| Seller | Sales & Checkout |
+| Role          | Permissions                      |
+| ------------- | -------------------------------- |
+| Owner         | Full System Access               |
+| Stock Manager | Product & Inventory Management   |
+| Seller        | Sales Recording & Product Lookup |
 
 [⬆ Back to Top](#top)
 
@@ -188,23 +199,25 @@ Smart-Stock/
 
 Main Tables
 
-- Users
-- Products
-- Categories
-- Inventory
-- Sales
-- History Logs
+* Users
+* Products
+* Categories
+* Inventory
+* Sales
+* HistoryLogs
 
 Relationships
 
-```
+```text
 Users
-  │
+   │
 Products
-  │
+   │
 Inventory
-  │
+   │
 Sales
+   │
+HistoryLogs
 ```
 
 [⬆ Back to Top](#top)
@@ -215,10 +228,10 @@ Sales
 
 # Requirements
 
-- Node.js 20+
-- PostgreSQL Database
-- Cloudinary Account
-- Telegram Bot Token
+* Node.js 20+
+* PostgreSQL Database (Neon)
+* Telegram Bot Token
+* npm
 
 [⬆ Back to Top](#top)
 
@@ -235,12 +248,6 @@ BOT_TOKEN=
 
 DATABASE_URL=
 
-CLOUDINARY_CLOUD_NAME=
-
-CLOUDINARY_API_KEY=
-
-CLOUDINARY_API_SECRET=
-
 PORT=3000
 ```
 
@@ -252,8 +259,10 @@ PORT=3000
 
 # Installation
 
+Clone the repository.
+
 ```bash
-git clone <repository>
+git clone <repository-url>
 
 cd Smart-Stock
 
@@ -284,9 +293,9 @@ npm start
 
 ---
 
-<a id="running-staging-test-suite"></a>
+<a id="running-test-suite"></a>
 
-# Running Staging Test Suite
+# Running Test Suite
 
 ```bash
 npm test
@@ -296,18 +305,21 @@ npm test
 
 ---
 
-<a id="web-dashboard-features"></a>
+<a id="telegram-bot-features"></a>
 
-# Web Dashboard Features
+# Telegram Bot Features
 
-- Login
-- Dashboard
-- Product Management
-- Inventory
-- Sales
-- Reports
-- User Management
-- Image Upload
+* Product Management
+* Inventory Monitoring
+* Sales Recording
+* Product Search
+* Category Management
+* User Authentication
+* Transaction History
+* Reply Keyboard Navigation
+* Inline Button Navigation
+* Input Validation
+* Error Handling
 
 [⬆ Back to Top](#top)
 
@@ -317,15 +329,17 @@ npm test
 
 # Telegram Bot Commands
 
-| Command | Description |
-|----------|-------------|
-| /start | Start Bot |
-| /menu | Main Menu |
-| /catalog | Product Catalog |
-| /add_product | Add Product |
-| /exchange | Currency Exchange |
-| /history | History |
-| /profile | User Profile |
+| Command      | Description              |
+| ------------ | ------------------------ |
+| /start       | Start the Bot            |
+| /menu        | Main Menu                |
+| /catalog     | View Product Catalog     |
+| /add_product | Add a New Product        |
+| /inventory   | View Inventory           |
+| /sales       | Record Sales             |
+| /history     | View Transaction History |
+| /profile     | View User Profile        |
+| /exchange    | Currency Exchange Rate   |
 
 [⬆ Back to Top](#top)
 
@@ -335,14 +349,15 @@ npm test
 
 # API Endpoints
 
-| Method | Endpoint |
-|---------|----------|
-| GET | /health |
-| GET | /products |
-| POST | /products |
-| PUT | /products/:id |
-| DELETE | /products/:id |
-| POST | /sales |
+| Method | Endpoint      | Description       |
+| ------ | ------------- | ----------------- |
+| GET    | /health       | Health Check      |
+| GET    | /products     | Get All Products  |
+| GET    | /products/:id | Get Product by ID |
+| POST   | /products     | Create Product    |
+| PUT    | /products/:id | Update Product    |
+| DELETE | /products/:id | Delete Product    |
+| POST   | /sales        | Record Sale       |
 
 [⬆ Back to Top](#top)
 
@@ -352,13 +367,15 @@ npm test
 
 # Development Notes
 
-- Modular Architecture
-- MVC Pattern
-- RESTful APIs
-- Clean Code
-- Input Validation
-- Error Handling
-- Unit Testing
+* Modular Architecture
+* MVC Design Pattern
+* RESTful API Design
+* Conversation-Based Telegram Bot
+* Input Validation
+* Centralized Error Handling
+* PostgreSQL Data Persistence
+* Unit Testing with Mocha
+* Clean Code Principles
 
 [⬆ Back to Top](#top)
 
@@ -368,16 +385,16 @@ npm test
 
 # Professional Project Highlights
 
-- Full Stack Project
-- Telegram Bot Integration
-- Responsive Dashboard
-- Cloudinary Image Storage
-- PostgreSQL Database
-- REST API
-- Role-Based Access Control
-- Audit Logs
-- Inventory Analytics
-- Production Ready Architecture
+* Telegram-Based Inventory Management
+* Conversational User Experience
+* Express.js REST API
+* PostgreSQL (Neon) Database
+* Modular Project Architecture
+* MVC Design Pattern
+* Role-Based Access Control
+* Transaction History Logging
+* Production-Oriented Folder Structure
+* Automated Testing with Mocha
 
 [⬆ Back to Top](#top)
 
@@ -387,6 +404,8 @@ npm test
 
 # License
 
-This project was developed for academic purposes as part of the Software Project Development (2026) course.
+This project was developed for academic purposes as part of the **Software Project Development (2026)** course.
+
+© 2026 Smart-Stock Inventory Bot Project Team.
 
 [⬆ Back to Top](#top)
