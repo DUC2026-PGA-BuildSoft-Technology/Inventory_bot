@@ -121,6 +121,23 @@ const query = async (text, params) => {
     return { rowCount: 1 };
   }
 
+  // Update product fields (name, category, color, size, price, image_url)
+  if (queryText.includes('update products set') && !queryText.includes('stock_quantity =')) {
+    const barcode = params[0];
+    const value = params[1];
+    let field = 'image_url';
+    const match = queryText.match(/set\s+([a-z0-9_]+)\s*=/);
+    if (match && match[1]) {
+      field = match[1];
+    }
+    const product = mockProducts.find(p => p.barcode === barcode);
+    if (product) {
+      product[field] = value;
+      return { rows: [product] };
+    }
+    return { rows: [] };
+  }
+
   // Insert sale
   if (queryText.includes('insert into sales')) {
     const newSale = {
