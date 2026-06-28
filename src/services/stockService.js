@@ -6,4 +6,11 @@ const updateStock = async (barcode, quantity, userId) => {
   return productService.updateStockByBarcode(barcode, quantity, userId);
 };
 
-module.exports = { updateStock };
+const getStockMovementReport = async (timeframe) => {
+  return productService.getStockMovementReport(timeframe);
+};
+
+module.exports = {
+  updateStock,
+  getStockMovementReport,
+};

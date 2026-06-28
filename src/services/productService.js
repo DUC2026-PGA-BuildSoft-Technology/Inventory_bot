@@ -16,9 +16,29 @@ const recordSaleByBarcode = async (barcode, quantity, userId) => {
   return productModel.recordSaleByBarcode(barcode, quantity, userId);
 };
 
+const updateProductField = async (barcode, field, value) => {
+  return productModel.updateProductField(barcode, field, value);
+};
+
+const deleteProduct = async (barcode) => {
+  return productModel.deleteProduct(barcode);
+};
+
+const getStockMovementReport = async (timeframe) => {
+  return productModel.getStockMovementReport(timeframe);
+};
+
+const createProduct = async (details) => {
+  return productModel.createProduct(details);
+};
+
 module.exports = {
   listCatalogProducts,
   findProductByBarcode,
   updateStockByBarcode,
   recordSaleByBarcode,
+  updateProductField,
+  deleteProduct,
+  getStockMovementReport,
+  createProduct,
 };

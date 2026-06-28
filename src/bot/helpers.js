@@ -6,10 +6,17 @@ const parseCommandArgs = (ctx) => {
 const formatMoney = (value) => `$${Number(value).toFixed(2)}`;
 
 const formatProductLine = (product, index) => {
-  const details = [product.category, product.color, product.size].filter(Boolean).join(' / ');
-  const detailText = details ? `\n   ${details}` : '';
+  const details = [product.category, product.color, product.size].filter(Boolean).join(' | ');
+  const detailText = details ? `\n ├ 📐 Specs: ${details}` : '';
+  const statusEmoji = product.stock_quantity <= 5 ? ' ⚠️' : '';
 
-  return `${index + 1}. ${product.product_name}${detailText}\n   Barcode: ${product.barcode} | Stock: ${product.stock_quantity} | Price: ${formatMoney(product.price)} | Status: ${product.status}`;
+  return [
+    `📦 <b>${product.product_name}</b>`,
+    ` ├ Barcode: <code>${product.barcode}</code> (${product.barcode.length} characters)`,
+    detailText ? ` ├ Specs: ${details}` : '',
+    ` └ Price: ${formatMoney(product.price)} | Stock: ${product.stock_quantity} units${statusEmoji} (${product.status})`,
+    `━━━━━━━━━━━━━━━━━━`,
+  ].filter(Boolean).join('\n');
 };
 
 module.exports = {

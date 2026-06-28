@@ -1,10 +1,10 @@
 # 📦 Smart-Stock Inventory Bot
 
-> A professional inventory management application built for the **Software Project Development** course.
+### 🤖 Live Staging Bot: [@SmartStockInventoryBot](https://t.me/SmartStockInventoryBot)
 
 Smart-Stock is a full-stack inventory management system that combines a **Telegram Bot**, a **Responsive Web Dashboard**, **Cloudinary-powered image management**, and a **PostgreSQL (Neon)** backend into one integrated solution.
 
-The application is designed for wholesale businesses to efficiently manage products, inventory, sales, and administrators through both a web dashboard and Telegram.
+Developed for the course Software Project Development (2026), it is designed for wholesale shops in Orussey Market to efficiently manage products, inventory, sales, and administrators.
 
 ---
 
@@ -21,6 +21,7 @@ The application is designed for wholesale businesses to efficiently manage produ
 * [⚙ Environment Configuration](#-environment-configuration)
 * [🚀 Installation](#-installation)
 * [▶ Running the Project](#-running-the-project)
+* [🧪 Running Staging Test Suite](#-running-staging-test-suite)
 * [🌐 Web Dashboard Features](#-web-dashboard-features)
 * [🤖 Telegram Bot Commands](#-telegram-bot-commands)
 * [📝 Development Notes](#-development-notes)
@@ -31,25 +32,11 @@ The application is designed for wholesale businesses to efficiently manage produ
 
 # 📖 Project Summary
 
-Smart-Stock is a professional inventory management application developed for the **Software Project Development** course.
-
-The system integrates several technologies into one complete inventory platform.
-
-### Core Components
-
-* 🤖 Telegram Bot
-* 🌐 Responsive Web Dashboard
-* ☁️ Cloudinary Image Storage
-* 🗄 PostgreSQL (Neon Database)
-
-The application enables users to:
-
-* Manage product inventory
-* Record product sales
-* Upload product images
-* Track stock levels
-* Manage administrators
-* View dashboard analytics
+Smart-Stock integrates several technologies into a complete inventory platform:
+* **Telegram Bot** for mobile, conversational access.
+* **Responsive Web Dashboard** for centralized administrative operations.
+* **Cloudinary** for image storage and management.
+* **PostgreSQL (Neon Database)** for relational data persistence.
 
 [⬆ Back to Top](#top)
 
@@ -57,54 +44,23 @@ The application enables users to:
 
 # ✨ Key Features
 
-## 📦 Product Management
+### 📦 Product & Stock Management
+* **Conversational Wizard**: Step-by-step product creation flow (`/add_product`) with validation, `/skip` (or `-`) skipping, and cancelling steps.
+* **Barcode Character Counting**: Display length of barcode inputs (e.g. `885001 (6 characters)`) across views.
+* **Inventory Control**: Update stock quantities, manage statuses (Active, Low Stock, Out of Stock). Low Stock is defined as stock quantity <= 5.
+* **Cloudinary Image Upload**: Upload and display product images on the web dashboard.
 
-* Create products
-* Edit products
-* Delete products
-* View product catalog
+### 💰 Sales & Reporting
+* **Sales Recording**: Log sales transactions, which automatically deducts quantity from inventory.
+* **Role-Based History Logs**: Customized audit trails for Sellers (checkouts), Stock Managers (adjustments), and Owners (global actions).
+* **ERP-Grade Stock Audit Reports**: Timeframe lists of Intakes, Outflows, New Product registrations, Specification Updates, Deletions, and Low Stock Alerts.
 
-## 📊 Inventory Management
-
-* Check stock quantity
-* Update inventory
-* Automatic stock status
-
-Available status:
-
-* Active
-* Low Stock
-* Out of Stock
-
-## 💰 Sales Management
-
-* Record sales
-* Automatically deduct stock
-* Maintain inventory accuracy
-
-## 👤 User Management
-
-* Create Seller accounts
-* Create Manager accounts
-* Store Telegram IDs
-* Role-based access
-
-## 🌐 Dashboard
-
-* Responsive UI
-* Product image upload
-* Dashboard statistics
-* Product management
-* Admin management
-
-## 🤖 Telegram Bot
-
-* View catalog
-* Check stock
-* Update stock
-* Record sales
-* Exchange rate lookup
-* Interactive menu
+### 🤖 Telegram Interface & UX
+* **Dynamic Navigation Layouts**: Persistent bottom Reply Keyboard (`📋 Main Menu`, `📖 View Catalog`, `⏳ History`, `👤 Profile`).
+* **Interactive Catalog Pagination**: Shows a clean **5 products per page** view with dynamic `◀️ Prev` and `Next ▶️` inline keyboard navigation buttons.
+* **Single-Message Interactive Dashboards**: Main Menu dashboard card for clean navigation.
+* **Exchange Rate Lookups**: Real-time USD → KHR conversion using `/exchange`.
+* **Zero-Crash Staging Compliance**: Complete input parameter sanitization and exception fallback handlers.
 
 [⬆ Back to Top](#top)
 
@@ -112,17 +68,15 @@ Available status:
 
 # 🛠 Technology Stack
 
-| Layer         | Technology        |
-| ------------- | ----------------- |
-| Backend       | Node.js           |
-| Framework     | Express.js        |
-| Telegram Bot  | Telegraf          |
-| Database      | PostgreSQL (Neon) |
-| Frontend      | HTML              |
-| Styling       | CSS               |
-| Client-side   | JavaScript        |
-| Image Storage | Cloudinary        |
-| HTTP Client   | Axios             |
+| Layer | Technology | Purpose |
+| :--- | :--- | :--- |
+| **Backend Runtime** | Node.js | Server Execution Environment |
+| **Web Server** | Express.js | API Endpoints & Health Checks |
+| **Telegram Bot** | Telegraf | Bot API Framework |
+| **Database** | PostgreSQL | Relational Storage (Neon DB) |
+| **Image Storage** | Cloudinary | Cloud Image Hosting |
+| **Frontend UI** | HTML / CSS / JS | Web Dashboard Interface |
+| **Testing Suite** | Mocha / Assert | Technical Audit Test Suite |
 
 [⬆ Back to Top](#top)
 
@@ -155,19 +109,6 @@ The project follows a modular architecture to improve maintainability and scalab
               PostgreSQL (Neon)
 ```
 
-### Folder Responsibilities
-
-| Folder        | Description                 |
-| ------------- | --------------------------- |
-| src/bot       | Telegram Bot initialization |
-| src/handlers  | Telegram command handlers   |
-| src/services  | Business logic              |
-| src/models    | Database queries            |
-| src/config    | Database configuration      |
-| dashboard     | Web dashboard               |
-| src/app.js    | API routes                  |
-| src/server.js | Application startup         |
-
 [⬆ Back to Top](#top)
 
 ---
@@ -182,14 +123,36 @@ Inventory_bot/
 │   └── styles.css
 ├── src/
 │   ├── bot/
+│   │   ├── bot.js            # Telegraf initialization
+│   │   └── helpers.js        # Formatting helpers & catalog formatting
 │   ├── config/
-│   ├── handlers/
-│   ├── models/
-│   ├── services/
+│   │   └── db.js             # Database connections
+│   ├── handlers/             # Telegram interaction controllers
+│   │   ├── catalog/          # Live product catalog commands
+│   │   ├── exchange/         # Currency API queries
+│   │   ├── help/             # Commands guidelines & shortcuts
+│   │   ├── menu/             # Keyboard & dashboard controllers
+│   │   ├── sell/             # Checkout sales flow
+│   │   ├── start/            # Unified entry dashboard card
+│   │   └── stock/            # Product Wizards & adjustments
+│   ├── models/               # Direct database parameterized queries
+│   │   ├── productModel.js
+│   │   ├── userModel.js
+│   │   ├── Schema.sql
+│   │   └── seed.sql
+│   ├── services/             # Business rules & report calculations
+│   │   ├── productService.js
+│   │   ├── stockService.js
+│   │   ├── salesService.js
+│   │   └── userService.js
 │   ├── app.js
 │   └── server.js
-├── .env.example
-├── .gitignore
+├── tests/                    # Zero-dependency Technical Staging Audit Suite
+│   ├── mocks.js              # Mock query intercepts
+│   ├── unit.test.js          # Unit tests
+│   ├── integration.test.js   # Integration tests
+│   ├── e2e.test.js           # End-to-end tests
+│   └── run.js                # Test runner
 ├── package.json
 └── README.md
 ```
@@ -199,8 +162,6 @@ Inventory_bot/
 ---
 
 # 📋 Requirements
-
-Before running the project, install:
 
 * Node.js 14+
 * PostgreSQL (Neon recommended)
@@ -213,17 +174,15 @@ Before running the project, install:
 
 # ⚙ Environment Configuration
 
-Copy the environment template.
-
+Copy the environment template:
 ```bash
 cp .env.example .env
 ```
 
-Update the following values.
-
+Configure the variables:
 ```env
 TELEGRAM_BOT_TOKEN=your_telegram_bot_token
-DATABASE_URL=postgresql://username:password@host:port/database?sslmode=require&channel_binding=require
+DATABASE_URL=postgresql://username:password@host:port/database?sslmode=require
 PORT=3000
 NODE_ENV=development
 CLOUDINARY_CLOUD_NAME=your_cloud_name
@@ -237,32 +196,16 @@ CLOUDINARY_API_SECRET=your_api_secret
 
 # 🚀 Installation
 
-## 1. Clone Repository
-
+### 1. Clone & Install
 ```bash
 git clone <repository-url>
 cd Inventory_bot
-```
-
-## 2. Install Dependencies
-
-```bash
 npm install
 ```
 
-## 3. Configure Environment
-
-Create a `.env` file from `.env.example`.
-
-## 4. Initialize Database
-
+### 2. Initialize Database Tables
 ```bash
 psql "$DATABASE_URL" -f src/models/Schema.sql
-```
-
-## 5. Seed Demo Data
-
-```bash
 psql "$DATABASE_URL" -f src/models/seed.sql
 ```
 
@@ -272,22 +215,26 @@ psql "$DATABASE_URL" -f src/models/seed.sql
 
 # ▶ Running the Project
 
-Development Mode
-
+### Development Mode (with hot-reloads)
 ```bash
 npm run dev
 ```
 
-Production Mode
-
+### Production Mode
 ```bash
 npm start
 ```
+The dashboard will be available at `http://127.0.0.1:3000`.
 
-Open the dashboard:
+[⬆ Back to Top](#top)
 
-```text
-http://127.0.0.1:3000
+---
+
+# 🧪 Running Staging Test Suite
+
+The repository contains a test suite to audit stability and verify all conversational wizards, negative validations, role-based controls, and database aggregate helper behaviors:
+```bash
+npm test
 ```
 
 [⬆ Back to Top](#top)
@@ -296,17 +243,12 @@ http://127.0.0.1:3000
 
 # 🌐 Web Dashboard Features
 
-The dashboard allows administrators to:
-
-* View product catalog
-* Upload product images
-* Create products
-* Edit products
-* Delete products
-* Monitor stock levels
-* Add seller accounts
-* Add manager accounts
-* View dashboard statistics
+* View entire product catalog.
+* Upload and change product images.
+* Create, edit, and delete products.
+* Real-time monitoring of stock levels.
+* Account management (Sellers & Managers).
+* View sales performance & store statistics.
 
 [⬆ Back to Top](#top)
 
@@ -314,26 +256,19 @@ The dashboard allows administrators to:
 
 # 🤖 Telegram Bot Commands
 
-| Command                         | Description                 |
-| ------------------------------- | --------------------------- |
-| `/start`                        | Register user               |
-| `/help`                         | Show available commands     |
-| `/menu`                         | Display command menu        |
-| `/view_catalog`                 | View product catalog        |
-| `/check_stock [barcode]`        | Check product stock         |
-| `/sell [barcode] [qty]`         | Record a sale               |
-| `/update_stock [barcode] [qty]` | Update stock quantity       |
-| `/exchange`                     | Get USD → KHR exchange rate |
-
-### Example
-
-```text
-/check_stock 885001
-/sell 885001 2
-/update_stock 885001 5
-/view_catalog
-/exchange
-```
+| Command | Description |
+| :--- | :--- |
+| `/start` | Unified entry card with role-specific menu actions. |
+| `/help` | Guidelines on command usages and shortcuts list. |
+| `/menu` | Display command dashboard menu. |
+| `/view_catalog` | List all products with specs, stock quantities, and details. |
+| `/check_stock [barcode]` | Inspect inventory details of a specific barcode. |
+| `/sell [barcode] [qty]` | Record sales and deduct stock from the catalog. |
+| `/update_stock [barcode] [qty]`| Direct stock increment or reduction. |
+| `/add_product` | Launch the conversational wizard to add a new catalog item. |
+| `/owner_report` | View timeframe daily, weekly, or monthly Sales and Stock Audit logs. |
+| `/manage_users` | View user profiles, ban/unban members, or promote roles. |
+| `/exchange` | Get the current USD to KHR currency exchange rate. |
 
 [⬆ Back to Top](#top)
 
@@ -341,11 +276,11 @@ The dashboard allows administrators to:
 
 # 📝 Development Notes
 
-* `src/app.js` defines API endpoints.
-* `src/server.js` starts the Express server.
-* `src/config/db.js` manages PostgreSQL connections.
-* `dashboard/` contains frontend assets.
-* The dashboard can run even if the Telegram bot token is not configured.
+* `src/app.js` defines all dashboard API endpoints.
+* `src/server.js` boots up the main Express server.
+* `src/config/db.js` handles pool connections to PostgreSQL.
+* `dashboard/` contains the dashboard HTML/CSS/JS frontend files.
+* The dashboard can operate independently even if the Telegram Bot Token is missing.
 
 [⬆ Back to Top](#top)
 
@@ -353,18 +288,10 @@ The dashboard allows administrators to:
 
 # ⭐ Professional Project Highlights
 
-This project demonstrates:
-
-* Clean architecture
-* Modular project structure
-* RESTful API development
-* Telegram Bot integration
-* Responsive web dashboard
-* PostgreSQL database integration
-* Cloudinary image storage
-* Environment-based configuration
-* Full-stack JavaScript development
-* Academic software engineering best practices
+* **Clean Modular Architecture**: Clean decoupling of handlers, services, and models.
+* **Robust Conversational State Machine**: Telegraf wizards for multi-step flows.
+* **PostgreSQL Performance**: Optimized parameterized SQL queries.
+* **Testing Rigor**: End-to-end, unit, and integration tests ensuring zero-crash compliance.
 
 [⬆ Back to Top](#top)
 
@@ -373,5 +300,3 @@ This project demonstrates:
 # 📄 License
 
 This project is licensed under the **MIT License**.
-
-[⬆ Back to Top](#top)
