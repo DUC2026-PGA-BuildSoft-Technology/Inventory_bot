@@ -69,19 +69,29 @@ const showProductDetails = async (ctx, barcode, editMode = false) => {
   
   keyboard.push([{ text: '🔙 Back to Catalog', callback_data: 'catalog_view' }]);
 
+  let photoSent = false;
   if (product.image_url && product.image_url.trim() !== '') {
-    if (editMode) {
-      // Delete text message to prevent message type collision
-      await ctx.deleteMessage().catch(() => {});
+    try {
+      if (editMode) {
+        // Delete text message to prevent message type collision
+        await ctx.deleteMessage().catch(() => {});
+      }
+      await ctx.replyWithPhoto(product.image_url, {
+        caption: text,
+        parse_mode: 'HTML',
+        reply_markup: {
+          inline_keyboard: keyboard,
+        },
+      });
+      photoSent = true;
+    } catch (err) {
+      console.warn(`⚠️ Failed to send product photo (${product.image_url}): ${err.message}. Falling back to text message.`);
+      // If we deleted the message above, we can no longer edit it. Force new message sending.
+      editMode = false;
     }
-    await ctx.replyWithPhoto(product.image_url, {
-      caption: text,
-      parse_mode: 'HTML',
-      reply_markup: {
-        inline_keyboard: keyboard,
-      },
-    });
-  } else {
+  }
+
+  if (!photoSent) {
     if (editMode) {
       try {
         await ctx.editMessageText(text, {

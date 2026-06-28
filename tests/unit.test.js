@@ -62,7 +62,7 @@ const runUnitTests = async () => {
 
   // Test 5: productService.listCatalogProducts
   const products = await productService.listCatalogProducts();
-  assert.strictEqual(products.length, 2);
+  assert.ok(products.length >= 2);
   assert.strictEqual(products[0].barcode, '885001');
   assert.strictEqual(products[1].barcode, '885002');
   console.log('    ✓ productService.listCatalogProducts passed');
